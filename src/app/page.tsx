@@ -5,7 +5,7 @@ import Tag from '@/components/tag';
 export default function Home() {
 	return (
 		<div className="flex flex-col h-full">
-			<div className='mt-20 space-y-2'>
+			<div className='mt-2 space-y-2'>
 				<Bookshelf className="">
 					<Book backgroundImage="book1.png" url='/book1' />
 					<Book backgroundImage="book2.png" url='/book2' />

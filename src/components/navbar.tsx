@@ -1,5 +1,6 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
+import { debounce } from 'lodash';
 
 interface Book {
     kind?: string;
@@ -19,24 +20,27 @@ export default function Navbar() {
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
     const searchRef = useRef<HTMLDivElement>(null);
 
-    interface SearchChangeEvent extends React.ChangeEvent<HTMLInputElement> {}
+    const debouncedSearch = useRef(
+        debounce(async (query: string) => {
+            if (query.length > 2) {
+                try {
+                    const response = await fetch(`/api/books/search?q=${encodeURIComponent(query)}`);
+                    const data = await response.json();
+                    setSearchResults(Array.isArray(data) ? data : data.data || []);
+                    setIsDropdownVisible(true);
+                } catch (error) {
+                    console.error("Erreur lors de la recherche:", error);
+                }
+            } else {
+                setIsDropdownVisible(false);
+            }
+        }, 300)
+    ).current;
 
-    const handleSearchChange = async (e: SearchChangeEvent) => {
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const query = e.target.value;
         setSearchQuery(query);
-        
-        if (query.length > 2) {
-            try {
-                const response = await fetch(`/api/books/search?q=${encodeURIComponent(query)}`);
-                const data = await response.json();
-                setSearchResults(Array.isArray(data) ? data : data.data || []);
-                setIsDropdownVisible(true);
-            } catch (error: unknown) {
-                console.error("Erreur lors de la recherche:", error);
-            }
-        } else {
-            setIsDropdownVisible(false);
-        }
+        debouncedSearch(query);
     };
 
     useEffect(() => {
@@ -92,8 +96,8 @@ export default function Navbar() {
                 )}
             </div>
             <nav className="flex space-x-4">
-                <a href="/" className="hover:text-gray-400">
-                    Mon compte
+                <a href="/login" className="hover:text-gray-400">
+                    Se connecter
                 </a>
             </nav>
         </div>
