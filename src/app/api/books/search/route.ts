@@ -15,14 +15,25 @@ export async function GET(request: Request) {
         }
         const data = await response.json();
         
-        // Ajouter une image par défaut si nécessaire
-        const items = data.items?.map(item => ({
+        interface GoogleBookVolumeInfo {
+            imageLinks?: {
+            thumbnail: string;
+            };
+            [key: string]: any;
+        }
+
+        interface GoogleBookItem {
+            volumeInfo: GoogleBookVolumeInfo;
+            [key: string]: any;
+        }
+
+        const items: GoogleBookItem[] = data.items?.map((item: GoogleBookItem) => ({
             ...item,
             volumeInfo: {
-                ...item.volumeInfo,
-                imageLinks: item.volumeInfo.imageLinks || {
-                    thumbnail: 'https://placehold.co/118x190?text=No+Image',
-                }
+            ...item.volumeInfo,
+            imageLinks: item.volumeInfo.imageLinks || {
+                thumbnail: 'https://placehold.co/118x190?text=No+Image',
+            }
             }
         })) || [];
 

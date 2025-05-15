@@ -3,7 +3,6 @@
 import { useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
-// Définir l'interface pour les livres de Google Books
 interface Book {
     kind?: string;
     id?: string;

@@ -1,7 +1,6 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
 
-// Définir le type pour les résultats de recherche
 interface Book {
     kind?: string;
     id?: string;
@@ -20,7 +19,9 @@ export default function Navbar() {
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
     const searchRef = useRef<HTMLDivElement>(null);
 
-    const handleSearchChange = async (e) => {
+    interface SearchChangeEvent extends React.ChangeEvent<HTMLInputElement> {}
+
+    const handleSearchChange = async (e: SearchChangeEvent) => {
         const query = e.target.value;
         setSearchQuery(query);
         
@@ -30,8 +31,7 @@ export default function Navbar() {
                 const data = await response.json();
                 setSearchResults(Array.isArray(data) ? data : data.data || []);
                 setIsDropdownVisible(true);
-                console.log("Résultats de recherche:", data); // Pour déboguer
-            } catch (error) {
+            } catch (error: unknown) {
                 console.error("Erreur lors de la recherche:", error);
             }
         } else {
@@ -40,11 +40,11 @@ export default function Navbar() {
     };
 
     useEffect(() => {
-        function handleClickOutside(event) {
-            if (searchRef.current && !searchRef.current.contains(event.target)) {
-                setIsDropdownVisible(false);
+        const handleClickOutside = (event: MouseEvent): void => {
+            if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+            setIsDropdownVisible(false);
             }
-        }
+        };
         
         document.addEventListener("mousedown", handleClickOutside);
         return () => {
