@@ -1,4 +1,4 @@
-// src/app/api/auth/session/route.ts
+// /api/auth/session
 import { verifySession } from '@/app/lib/dal';
 import { NextResponse } from 'next/server';
 

@@ -5,6 +5,8 @@ import { getUser, createUser } from "../utils/userCrud";
 import { hashPassword, comparePassword } from "../utils/auth";
 import { createSession } from "../lib/session";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
+import { revalidatePath } from "next/cache";
 
 export async function signUp(state: FormState, formData: FormData) {
     const validatedData = SignupFormSchema.safeParse({
@@ -63,5 +65,13 @@ export async function signIn(state: FormState, formData: FormData) {
         };
     }
     await createSession(user.user_id, user.username)
+    revalidatePath("/", "page")
+    redirect("/")
+}
+
+export async function signOut() {
+    const cookieStore = await cookies()
+    cookieStore.delete({ name: 'session', path: '/' })
+    revalidatePath("/")
     redirect("/")
 }

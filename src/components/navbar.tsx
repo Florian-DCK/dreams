@@ -1,6 +1,9 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { debounce } from 'lodash';
+import { LogOut } from 'lucide-react';
+import { signOut } from '@/app/actions/auth';
 
 interface Session {
     isAuth: boolean;
@@ -21,19 +24,25 @@ interface Book {
 
 export default function Navbar() {
     const [session, setSession] = useState<Session>({ isAuth: false, username: '' });
+    const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState<Book[]>([]);
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
     const searchRef = useRef<HTMLDivElement>(null);
+    const pathname = usePathname();
 
     useEffect(() => {
         fetch('/api/auth/session')
-            .then(res => res.json())  // Convertir d'abord en JSON
+            .then(res => res.json())
             .then(data => {
                 setSession(data);
+                setIsLoading(false);
             })
-            .catch(err => console.error('Erreur:', err));
-    }, []);
+            .catch(err => {
+                console.error('Erreur:', err);
+                setIsLoading(false);
+            });
+    }, [pathname]);
 
     const debouncedSearch = useRef(
         debounce(async (query: string) => {
@@ -111,10 +120,26 @@ export default function Navbar() {
                 )}
             </div>
             <nav className="flex space-x-4">
-                {session.isAuth && (
-                    <a href="/profile" className="hover:text-gray-400">
-                        {session.username}
-                    </a>
+                {!isLoading && (
+                    <>
+                        {session.isAuth && (
+                            <div className='flex items-center'>
+                                <a href="/profile" className="hover:text-gray-400">
+                                    {session.username}
+                                </a>
+                                <form action={signOut}>
+                                    <button type='submit'>
+                                        <LogOut className="ml-2 cursor-pointer" color='black' size={16} />
+                                    </button>
+                                </form>
+                            </div>
+                        )}
+                        {!session.isAuth && (
+                            <a href="/login" className="hover:text-gray-400">
+                                Connexion
+                            </a>
+                        )}
+                    </>
                 )}
             </nav>
         </div>
