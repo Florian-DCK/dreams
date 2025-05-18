@@ -82,8 +82,7 @@ L'objectif de Dreams est de créer une communauté dynamique où les passionnés
 - **status**: ENUM('active', 'suspended', 'deleted')
 
 #### Books (Livres)
-- **book_id**: INT, PK, AUTO_INCREMENT
-- **google_books_id**: VARCHAR(100), UNIQUE
+- **id**: VARCHAR(100), UNIQUE
 - **title**: VARCHAR(255)
 - **author**: VARCHAR(255)
 - **publisher**: VARCHAR(100)
@@ -98,7 +97,7 @@ L'objectif de Dreams est de créer une communauté dynamique où les passionnés
 #### UserBooks (Relation Utilisateurs-Livres)
 - **user_book_id**: INT, PK, AUTO_INCREMENT
 - **user_id**: INT, FK -> Users.user_id
-- **book_id**: INT, FK -> Books.book_id
+- **book_id**: INT, FK -> Books.id
 - **status**: ENUM('read', 'reading', 'to_read')
 - **start_date**: DATE
 - **finish_date**: DATE

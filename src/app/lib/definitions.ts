@@ -1,9 +1,10 @@
+import { UNSTABLE_REVALIDATE_RENAME_ERROR } from 'next/dist/lib/constants';
 import { z } from 'zod';
 
 export const SignupFormSchema = z.object({
-    name: z
+    username: z
         .string()
-        .min(2, { message: 'Le nom doit contenir au moins 2 caractères.' })
+        .min(2, { message: 'Le pseudo doit contenir au moins 2 caractères.' })
         .trim(),
     email: z.string().email({ message: 'Veuillez saisir un email valide.' }).trim(),
     password: z
@@ -20,10 +21,17 @@ export const SignupFormSchema = z.object({
 export type FormState =
     | {
             errors?: {
-                name?: string[];
+                username?: string[];
                 email?: string[];
                 password?: string[];
             };
             message?: string;
-      }
+    }
     | undefined;
+
+export type SessionPayload = {
+    id: string;
+    username: string;
+    iat?: number;
+    exp?: number;
+}

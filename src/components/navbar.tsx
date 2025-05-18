@@ -2,6 +2,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { debounce } from 'lodash';
 
+interface Session {
+    isAuth: boolean;
+    username: string;
+}
+
 interface Book {
     kind?: string;
     id?: string;
@@ -15,10 +20,20 @@ interface Book {
 }
 
 export default function Navbar() {
+    const [session, setSession] = useState<Session>({ isAuth: false, username: '' });
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState<Book[]>([]);
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
     const searchRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        fetch('/api/auth/session')
+            .then(res => res.json())  // Convertir d'abord en JSON
+            .then(data => {
+                setSession(data);
+            })
+            .catch(err => console.error('Erreur:', err));
+    }, []);
 
     const debouncedSearch = useRef(
         debounce(async (query: string) => {
@@ -96,9 +111,11 @@ export default function Navbar() {
                 )}
             </div>
             <nav className="flex space-x-4">
-                <a href="/login" className="hover:text-gray-400">
-                    Se connecter
-                </a>
+                {session.isAuth && (
+                    <a href="/profile" className="hover:text-gray-400">
+                        {session.username}
+                    </a>
+                )}
             </nav>
         </div>
     );
