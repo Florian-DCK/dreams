@@ -16,18 +16,24 @@ export async function signUp(state: FormState, formData: FormData) {
     })
 
     if (!validatedData.success) {
-        return {
+        return { 
             error: validatedData.error.flatten().fieldErrors,
         }
     }
 
-    const db = new Database();
-    const connection = await db.getDB();
     const { username, email, password } = validatedData.data;
     if (await getUser(email).catch(() => false)) {
         return {
             error: {
                 email: ["Cet utilisateur existe déjà."],
+            },
+        };
+    }
+
+    if (await getUser(undefined, undefined, username).catch(() => false)) {
+        return {
+            error: {
+                username: ["Ce nom d'utilisateur existe déjà."],
             },
         };
     }
@@ -41,6 +47,20 @@ export async function signUp(state: FormState, formData: FormData) {
             },
         };
     });
+
+    if (result) {
+        const user = await getUser(email).catch(() => false);
+        if (!user) {
+            return {
+                error: {
+                    message: "Une erreur est survenue lors de la création de l'utilisateur.",
+                },
+            };
+        }
+        await createSession(user.user_id, user.username)
+        revalidatePath("/", "page")
+        redirect("/")
+    }
 
 }
 
