@@ -110,7 +110,7 @@ export default function Navbar() {
                         {[...searchResults].reverse().map((result, index) => (
                             <a 
                                 key={index} 
-                                href={`/detail/${result.id}`} 
+                                href={`/details/${result.id}`} 
                                 className="block p-2 hover:bg-gray-100"
                             >
                                 {result.volumeInfo.title}

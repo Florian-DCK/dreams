@@ -1,4 +1,3 @@
-import { UNSTABLE_REVALIDATE_RENAME_ERROR } from 'next/dist/lib/constants';
 import { z } from 'zod';
 
 export const SignupFormSchema = z.object({
