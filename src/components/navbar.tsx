@@ -87,7 +87,7 @@ export default function Navbar() {
     };
 
     return (
-        <div className="flex justify-between items-center p-4 bg-[#EBE5C2]">
+        <div className="flex justify-between items-center p-4 bg-[#ecebe4] shadow-[0_10px_10px_-10px_rgba(0,0,0,0.1)]">
             <a href="/">
                 <h1 className="text-lg font-bold">Dreams</h1>
             </a>
@@ -100,13 +100,13 @@ export default function Navbar() {
                         value={searchQuery}
                         onChange={handleSearchChange}
                         onFocus={handleFocus}
-                        className="p-2 rounded-md"
+                        className="p-2 border-b-2 border-gray-300 outline-none focus:border-gray-500 transition duration-200"
                         placeholder="Rechercher..."
                         autoComplete='off'
                     />
                 </form>
                 {isDropdownVisible && searchResults.length > 0 && (
-                    <div className="absolute left-0 right-0 mt-1 bg-white rounded-md shadow-lg z-10 max-h-60 overflow-y-auto">
+                    <div className="absolute left-0 right-0 mt-1 bg-white rounded-md shadow-lg z-50 max-h-60 overflow-y-auto">
                         {[...searchResults].reverse().map((result, index) => (
                             <a 
                                 key={index} 
