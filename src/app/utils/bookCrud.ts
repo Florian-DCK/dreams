@@ -28,6 +28,7 @@ export async function checkBookExists(id: string) {
     const connection = await db.getDB();
     const query = "SELECT * FROM Books WHERE id = ?";
     const [rows] = await connection.query(query, [id]);
+    console.log("Rows found:", rows);
     db.close();
     return rows.length > 0;
 }
@@ -37,15 +38,45 @@ export async function checkBookExists(id: string) {
  * @returns true si le livre a été ajouté, false sinon
  */
 export async function fetchBook(id: string) {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/books/search?q=${id}`)
+    // Utiliser une URL absolue pour l'API
+    const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+    const response = await fetch(`${BASE_URL}/api/books/get?id=${encodeURIComponent(id)}`)
     const data = await response.json();
-    if (data.items && data.items.length > 1) {
-        throw new Error("Multiple books found.");
-    } else if (data.items && data.items.length === 0) {
+    
+    if (!data.data || data.data.length === 0) {
         throw new Error("Book not found.");
     }
 
-    const book = data.items[0];
-    console.log("Livre trouvé:", book); // Pour vérifier les données reçues
-    return book; // Retourne le livre pour vérification
+    const book = data.data;
+    try {
+        const db = new Database();
+        const connection = await db.getDB();
+        const query = "INSERT INTO Books (id, title, author, publisher, published_date, page_count, description, cover_image, isbn) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        let isbn = "Unknown";
+        if (book.volumeInfo.industryIdentifiers) {
+            const isbnObj = book.volumeInfo.industryIdentifiers.find(id => id.type === "ISBN_13" || id.type === "ISBN_10");
+            if (isbnObj) isbn = isbnObj.identifier;
+        }
+        const values = [
+            book.id,
+            book.volumeInfo.title,
+            book.volumeInfo.authors ? book.volumeInfo.authors.join(", ") : "Unknown",
+            book.volumeInfo.publisher || "Unknown",
+            book.volumeInfo.publishedDate 
+                ? (/^\d{4}$/.test(book.volumeInfo.publishedDate) 
+                    ? `${book.volumeInfo.publishedDate}-01-01` 
+                    : book.volumeInfo.publishedDate.split("T")[0]) 
+                : null,
+            book.volumeInfo.pageCount || 0,
+            book.volumeInfo.description || "No description available",
+            book.volumeInfo.imageLinks?.thumbnail || book.volumeInfo.imageLinks?.smallThumbnail || "https://placehold.co/118x190?text=No+Image",
+            isbn
+        ];
+        await connection.query(query, values);
+        db.close();
+    } catch (error) {
+        console.error("Erreur lors de la récupération du livre:", error);
+        
+    }
+    return book;
 }
