@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, use } from 'react';
 import { checkBookExists, fetchBook, getBook } from '@/app/utils/bookCrud';
+import Card from '@/components/Card';
 
 export default function Details({ params }: { params: { id: string } }) {
     const { id } = use(params);
@@ -41,44 +42,79 @@ export default function Details({ params }: { params: { id: string } }) {
     if (!book) return <div className="container mx-auto p-4">Livre non trouvé</div>;
 
     return (
-        <div className="container mx-auto p-4">
-            <div>
-                
-            </div>
-            <h1 className="text-2xl font-bold mb-4">{book.title}</h1>
-            {book.cover_image && (
-                <img 
-                    src={book.cover_image} 
-                    alt={book.title}
-                    className="w-48 h-auto mb-4 shadow-lg rounded"
-                />
-            )}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    {book.authors && (
-                        <p><span className="font-semibold">Auteur(s):</span> {book.authors.join(', ')}</p>
-                    )}
-                    {book.publishedDate && (
-                        <p><span className="font-semibold">Date de publication:</span> {book.publishedDate}</p>
-                    )}
-                    {book.publisher && (
-                        <p><span className="font-semibold">Éditeur:</span> {book.publisher}</p>
-                    )}
-                    {book.pageCount && (
-                        <p><span className="font-semibold">Nombre de pages:</span> {book.pageCount}</p>
-                    )}
-                    {book.categories && (
-                        <p><span className="font-semibold">Catégories:</span> {book.categories.join(', ')}</p>
-                    )}
-                </div>
-                <div>
-                    {book.description && (
-                        <div>
-                            <h2 className="text-xl font-semibold mb-2">Description:</h2>
-                            <p className="text-gray-700">{book.description}</p>
-                        </div>
-                    )}
-                </div>
+        <div className="min-h-full flex items-center justify-center">
+            <div className="w-[90%] mx-auto px-8 py-10 rounded flex flex-col md:flex-row gap-8 ">
+                {/* Colonne gauche : titre, description, image */}
+                <Card className="flex-1 flex flex-col gap-4">
+                    <h1 className="text-3xl font-extrabold mb-2 text-black">{book.title}</h1>
+                    <div className='flex'>
+                        {book.description && (
+                            <p className="text-black text-base leading-relaxed whitespace-pre-line">
+                                {book.cover_image && (
+                                    <img
+                                        src={book.cover_image}
+                                        alt={book.title}
+                                        className="h-80 w-auto shadow-lg rounded float-right ml-6 mb-4"
+                                    />
+                                )}
+                                <span dangerouslySetInnerHTML={{ __html: book.description }} />
+                            </p>
+                        )}
+                    </div>
+                </Card>
+                {/* Séparateur vertical */}
+                {/* <div className="hidden md:block w-px bg-[#3f3f3f] mx-6"></div> */}
+                {/* Colonne droite : infos */}
+                <Card className="flex-1 self-start">
+                    <h2 className="text-2xl font-bold mb-4 text-black">Informations du livre :</h2>
+                    <div className="text-black text-base space-y-2">
+                        {book.published_date && (
+                            <p>
+                                <span className="font-semibold">Date de publication :</span>{" "}
+                                {new Date(book.published_date).toLocaleDateString("fr-FR", {
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric"
+                                })}
+                            </p>
+                        )}
+                        {book.genres && (
+                            <p>
+                                <span className="font-semibold">Genres :</span>{" "}
+                                {Array.isArray(book.genres) ? book.genres.join(", ") : book.genres}
+                            </p>
+                        )}
+                        {book.author && (
+                            <p>
+                                <span className="font-semibold">Auteur :</span>{" "}
+                                {Array.isArray(book.author)
+                                    ? book.author.map((a: string, i: number) => (
+                                        <span key={a}>
+                                            <a href="#" className="underline hover:text-blue-700">{a}</a>
+                                            {i < book.author.length - 1 && ", "}
+                                        </span>
+                                    ))
+                                    : <a href="#" className="underline hover:text-blue-700">{book.author}</a>
+                                }
+                            </p>
+                        )}
+                        {book.publisher && (
+                            <p>
+                                <span className="font-semibold">Éditeur :</span> {book.publisher}
+                            </p>
+                        )}
+                        {book.language && (
+                            <p>
+                                <span className="font-semibold">Langue :</span> {book.language}
+                            </p>
+                        )}
+                        {book.page_count && (
+                            <p>
+                                <span className="font-semibold">Nombre de pages :</span> {book.page_count}
+                            </p>
+                        )}
+                    </div>
+                </Card>
             </div>
         </div>
     );
