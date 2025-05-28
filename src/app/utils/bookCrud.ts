@@ -28,7 +28,6 @@ export async function checkBookExists(id: string) {
     const connection = await db.getDB();
     const query = "SELECT * FROM Books WHERE id = ?";
     const [rows] = await connection.query(query, [id]);
-    console.log("Rows found:", rows);
     db.close();
     return rows.length > 0;
 }

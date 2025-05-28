@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server';
 
+/* * This API route fetches book details from the Google Books API based on a given ID.
+ * If no ID is provided, it defaults to 'programming'.
+**/
 export async function GET(request: Request) {
 	const { searchParams } = new URL(request.url);
 	const query = searchParams.get('id') || 'programming';

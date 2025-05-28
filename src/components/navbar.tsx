@@ -106,15 +106,21 @@ export default function Navbar() {
                     />
                 </form>
                 {isDropdownVisible && searchResults.length > 0 && (
-                    <div className="absolute left-0 right-0 mt-1 bg-white rounded-md shadow-lg z-50 max-h-60 overflow-y-auto">
+                    <div className="absolute transform -translate-x-1/2 left-1/2 right-0 mt-1 bg-white rounded-md shadow-lg w-[300%] z-50 max-h-60 overflow-y-auto">
                         {[...searchResults].reverse().map((result, index) => (
-                            <a 
-                                key={index} 
-                                href={`/details/${result.id}`} 
-                                className="block p-2 hover:bg-gray-100"
-                            >
-                                {result.volumeInfo.title}
-                            </a>
+                            <div key={index} className=''>
+                                <a 
+                                    key={index} 
+                                    href={`/details/${result.id}`} 
+                                    className="p-2 hover:bg-gray-100 flex flex-col"
+                                >
+                                    {result.volumeInfo.title}
+                                    {result.volumeInfo.authors && result.volumeInfo.authors.length > 0 && (
+                                        <span className="text-sm text-gray-500"> - {result.volumeInfo.authors.join(', ')}</span>
+                                    )}
+                                </a>
+                                <hr className=' border-gray-200' />
+                            </div>
                         ))}
                     </div>
                 )}

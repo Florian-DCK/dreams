@@ -2,6 +2,7 @@
 import { useEffect, useState, use } from 'react';
 import { checkBookExists, fetchBook, getBook } from '@/app/utils/bookCrud';
 import Card from '@/components/Card';
+import Notes from '@/components/notes';
 
 export default function Details({ params }: { params: { id: string } }) {
     const { id } = use(params);
@@ -10,20 +11,22 @@ export default function Details({ params }: { params: { id: string } }) {
     const [error, setError] = useState<string | null>(null);
     
     useEffect(() => {
+        /*
+            * Fonction pour récupérer les détails d'un livre par son ID.
+            * Elle vérifie d'abord si le livre existe dans la base de données.
+            * Si le livre n'existe pas, elle le récupère depuis l'API externe et l'ajoute à la base de données.
+            * Ensuite, elle met à jour l'état du composant avec les détails du livre.
+        **/
         const fetchBookDetails = async () => {
             try {
                 setLoading(true);
-                console.log("ID du livre:", id);
                 const bookExists = await checkBookExists(id);
-                console.log("Livre existe dans la base de données:", bookExists);
                 
                 if (!bookExists) {
-                    console.log("Livre non trouvé dans la base de données, récupération depuis l'API...");
-                    const newBook = await fetchBook(id);
+                    await fetchBook(id);
                     const book = await getBook(id);
                     setBook(book);
                 } else {
-                    console.log("Livre déjà présent dans la base de données.");
                     const bookData = await getBook(id);
                     setBook(bookData);
                 }

@@ -1,6 +1,5 @@
 "use server"
 import { SignupFormSchema, FormState } from "../lib/definitions";
-import Database from "../utils/database";
 import { getUser, createUser } from "../utils/userCrud";
 import { hashPassword, comparePassword } from "../utils/auth";
 import { createSession } from "../lib/session";
@@ -8,6 +7,11 @@ import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 
+/* 
+* This file contains server-side functions for user authentication, including sign-up, sign-in, and sign-out.
+* It uses a schema for validation, interacts with a database for user management,
+* and handles session management through cookies.
+*/
 export async function signUp(state: FormState, formData: FormData) {
     const validatedData = SignupFormSchema.safeParse({
         username: formData.get("username"),

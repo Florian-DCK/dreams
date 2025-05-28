@@ -1,5 +1,11 @@
 import { NextResponse } from 'next/server';
 
+
+/**
+ * This API route fetches a list of books from the Google Books API based on a search query.
+ * If no query is provided, it defaults to 'programming'.
+ * The results are limited to 5 items and are restricted to French language books.
+ */
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const query = searchParams.get('q') || 'programming';
