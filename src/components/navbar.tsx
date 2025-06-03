@@ -87,9 +87,9 @@ export default function Navbar() {
     };
 
     return (
-        <div className="flex justify-between items-center p-4 bg-[#ecebe4] shadow-[0_10px_10px_-10px_rgba(0,0,0,0.1)]">
+        <div className="flex justify-between items-center p-4 bg-primary shadow-[0_10px_10px_-10px_rgba(0,0,0,0.1)]">
             <a href="/">
-                <h1 className="text-lg font-bold">Dreams</h1>
+                <h1 className="text-lg font-bold text-background">Dreams</h1>
             </a>
             <div className="relative" ref={searchRef}>
                 <form action="/search" method="get">
@@ -100,7 +100,7 @@ export default function Navbar() {
                         value={searchQuery}
                         onChange={handleSearchChange}
                         onFocus={handleFocus}
-                        className="p-2 border-b-2 border-gray-300 outline-none focus:border-gray-500 transition duration-200"
+                        className="p-2 border-b-2 border-gray-300 outline-none focus:border-gray-500 transition duration-200 text-background"
                         placeholder="Rechercher..."
                         autoComplete='off'
                     />
@@ -130,12 +130,12 @@ export default function Navbar() {
                     <>
                         {session.isAuth && (
                             <div className='flex items-center'>
-                                <a href="/profile" className="hover:text-gray-400">
+                                <a href="/profile" className="hover:text-gray-400 text-background">
                                     {session.username}
                                 </a>
                                 <form action={signOut}>
                                     <button type='submit'>
-                                        <LogOut className="ml-2 cursor-pointer" color='black' size={16} />
+                                        <LogOut className="ml-2 cursor-pointer" color='background' size={16} />
                                     </button>
                                 </form>
                             </div>
