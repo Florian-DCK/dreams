@@ -11,10 +11,12 @@ import {
 } from '@/components/ui/dialog';
 import Button from '../button';
 
-function AddToLibraryModal({ isOpen, setIsOpen, bookId }: {
+function AddToLibraryModal({ isOpen, setIsOpen, bookId, note, review }: {
     isOpen: boolean;
     setIsOpen: Dispatch<SetStateAction<boolean>>;
     bookId: string;
+    note?: number;
+    review?: string;
 }) {
     const [libraries, setLibraries] = useState<any[]>([]);
     const [selectedLibrary, setSelectedLibrary] = useState('');
@@ -68,7 +70,9 @@ function AddToLibraryModal({ isOpen, setIsOpen, bookId }: {
                 },
                 body: JSON.stringify({
                     libraryId: selectedLibrary,
-                    bookId: bookId
+                    bookId: bookId,
+                    note: note,
+                    review: review,
                 }),
             });
 
@@ -154,9 +158,13 @@ function AddToLibraryModal({ isOpen, setIsOpen, bookId }: {
 export default function useAddToLibraryModal() {
     const [isOpen, setIsOpen] = useState(false);
     const [bookId, setBookId] = useState<string>('');
+    const [note, setNote] = useState<number | undefined>(undefined);
+    const [review, setReview] = useState<string | undefined>(undefined);
 
-    const openModal = (id: string) => {
+    const openModal = (id: string, noteValue?: number, reviewValue?: string) => {
         setBookId(id);
+        setNote(noteValue);
+        setReview(reviewValue);
         setIsOpen(true);
     };
 
@@ -165,7 +173,9 @@ export default function useAddToLibraryModal() {
             <AddToLibraryModal 
                 isOpen={isOpen} 
                 setIsOpen={setIsOpen} 
-                bookId={bookId} 
+                bookId={bookId}
+                note={note}
+                review={review}
             />
         );
     };

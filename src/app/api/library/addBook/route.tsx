@@ -4,7 +4,7 @@ import { checkBookExists, fetchBook } from "@/app/utils/bookCrud";
 
 export async function POST(request: Request) {
     try {
-        const { bookId, libraryId } = await request.json();
+        const { bookId, libraryId, note, review } = await request.json();
         if (!bookId || !libraryId) {
             return new Response(
                 JSON.stringify({ error: "Missing bookId or libraryId" }),
@@ -41,8 +41,8 @@ export async function POST(request: Request) {
             }
         }
 
-        const query = "INSERT INTO LibraryBooks (library_id, book_id) VALUES (?, ?)";
-        await connection.query(query, [libraryId, bookId]);
+        const query = "INSERT INTO LibraryBooks (library_id, book_id, note, review) VALUES (?, ?, ?, ?)";
+        await connection.query(query, [libraryId, bookId, note || null, review || null]);
         db.close();
 
         return new Response(

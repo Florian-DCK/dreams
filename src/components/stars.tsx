@@ -1,9 +1,25 @@
 import { Sparkles } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-export default function Stars({ className = "", note = 0, editable = true}: { className?: string, note?: number, editable?: boolean }) {
+export default function Stars({ 
+    className = "", 
+    note = 0, 
+    editable = true,
+    onRatingChange
+}: { 
+    className?: string, 
+    note?: number, 
+    editable?: boolean,
+    onRatingChange?: (rating: number) => void
+}) {
     const [rating, setRating] = useState(note > 0 ? note : 0);
     const [animatedStar, setAnimatedStar] = useState<number | null>(null);
+
+    useEffect(() => {
+        if (onRatingChange) {
+            onRatingChange(rating);
+        }
+    }, [rating, onRatingChange]);
 
     return (
         <div className='flex gap-1'>

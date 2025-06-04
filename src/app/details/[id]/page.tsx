@@ -1,11 +1,13 @@
 // @ts-nocheck
 'use client';
-import { useEffect, useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { checkBookExists, fetchBook, getBook } from '@/app/utils/bookCrud';
 import Card from '@/components/card';
 import Notes from '@/components/details/notes';
-import DetailsControls from '@/components/details/detailsControls';
 import DetailsReviews from '@/components/details/detailsReviews';
+import Button from '@/components/button';
+import { Plus } from 'lucide-react';
+import { AddToLibraryModalContext } from '@/components/modals/providers';
 
 type PageProps = {
   params: {
@@ -19,6 +21,13 @@ export default function Details({ params }: PageProps) {
     const [book, setBook] = useState<any>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [rating, setRating] = useState<number>(0);
+    const [review, setReview] = useState<string>("");
+    const { openModal } = useContext(AddToLibraryModalContext);
+
+    const handleAddToLibrary = () => {
+        openModal(book.id, rating, review);
+    };
 
     useEffect(() => {
         const fetchBookDetails = async () => {
@@ -76,8 +85,9 @@ export default function Details({ params }: PageProps) {
                                 </p>
                             )}
                         </div>
+						<Button onClick={handleAddToLibrary} ><Plus /><span>Ajouter à l'une de mes bibliothèques</span></Button>
                     </Card>
-                    <DetailsControls className="flex-1 self-start" book={book.id} />
+
                 </section>
 				{/* Séparateur vertical */}
 
@@ -146,7 +156,11 @@ export default function Details({ params }: PageProps) {
 						</div>
 					</Card>
                     {/* Section des notes */}
-					<Notes className="flex-1 " />
+					<Notes 
+                        className="flex-1"
+                        onReviewChange={setReview}
+                        onRatingChange={setRating}
+                    />
 				</section>
 			</div>
 			{/* Section des notes et avis des utilisateurs en dessous de tout le reste */}
