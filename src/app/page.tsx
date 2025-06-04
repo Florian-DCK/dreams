@@ -3,7 +3,6 @@ import Bookshelf from '@/components/bookshelf';
 import Book from '@/components/book';
 import Tag from '@/components/tag';
 import { useEffect, useState } from 'react';
-import { set } from 'lodash';
 
 
 export default function Home() {
