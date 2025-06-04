@@ -55,7 +55,7 @@ export default function Home() {
 										url={`/library/${library.id}/book/${book.book_id}`}
 									/>
 								))}
-								<Tag text={library.name} className="absolute z-10 mb-2 -bottom-[34px]" color={library.color} />
+								<Tag text={library.name} className="absolute z-10 mb-2 -bottom-[34px]" color={library.color} link={`/library/${library.id}`} />
 							</Bookshelf>
 						))
 					)
