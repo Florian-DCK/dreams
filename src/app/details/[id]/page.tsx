@@ -6,7 +6,7 @@ import Card from '@/components/card';
 import Notes from '@/components/details/notes';
 import DetailsReviews from '@/components/details/detailsReviews';
 import Button from '@/components/button';
-import { Plus } from 'lucide-react';
+import { Plus , PenLine} from 'lucide-react';
 import { AddToLibraryModalContext } from '@/components/modals/providers';
 
 type PageProps = {
@@ -23,10 +23,11 @@ export default function Details({ params }: PageProps) {
     const [error, setError] = useState<string | null>(null);
     const [rating, setRating] = useState<number>(0);
     const [review, setReview] = useState<string>("");
+    const [editableTitle, setEditableTitle] = useState<string>("");
     const { openModal } = useContext(AddToLibraryModalContext);
 
     const handleAddToLibrary = () => {
-        openModal(book.id, rating, review);
+        openModal(book.id, rating, review, editableTitle);
     };
 
     useEffect(() => {
@@ -39,9 +40,11 @@ export default function Details({ params }: PageProps) {
                     await fetchBook(id);
                     const book = await getBook(id);
                     setBook(book);
+                    setEditableTitle(book.title); // Initialiser le titre éditable
                 } else {
                     const bookData = await getBook(id);
                     setBook(bookData);
+                    setEditableTitle(bookData.title); // Initialiser le titre éditable
                 }
             } catch (error) {
                 console.error(
@@ -68,9 +71,15 @@ export default function Details({ params }: PageProps) {
             <div className="w-[90%] mx-auto px-8 rounded flex flex-col md:flex-row gap-8 ">
                 <section className='flex-1 flex-col gap-4 space-y-5'>
                     <Card className="flex-1 flex flex-col gap-4">
-                        <h1 className="text-3xl font-extrabold mb-2">
-                            {book.title}
-                        </h1>
+						<span className='flex items-center gap-3 w-full'>
+							<PenLine />
+							<input 
+                            className="text-3xl font-extrabold mb-2 w-full" 
+                            value={editableTitle} 
+                            onChange={(e) => setEditableTitle(e.target.value)} 
+                        />
+						</span>
+
                         <div className="flex">
                             {book.description && (
                                 <p className="text-base leading-relaxed whitespace-pre-line">

@@ -11,7 +11,7 @@ export const NewLibraryModalContext = createContext<{
 });
 
 export const AddToLibraryModalContext = createContext<{
-	openModal: (bookId: string, note?: number, review?: string) => void;
+	openModal: (bookId: string, note?: number, review?: string, customTitle?: string) => void;
 	setIsOpen: Dispatch<SetStateAction<boolean>>;
 }>({
 	openModal: () => {},
