@@ -1,7 +1,7 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import SearchCard from '@/components/search/searchCard';
 
 interface Book {
@@ -16,7 +16,7 @@ interface Book {
     };
 }
 
-export default function SearchPage() {
+function SearchContent() {
     const searchParams = useSearchParams();
     const searchQuery = searchParams.get('q') || '';
     const [searchResults, setSearchResults] = useState<Book[]>([]);
@@ -45,12 +45,19 @@ export default function SearchPage() {
                 <p>Aucun résultat trouvé</p>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
                     {searchResults.map((book, index) => (
                         <SearchCard key={index} book={book} />
                     ))}
                 </div>
             )}
         </div>
+    );
+}
+
+export default function SearchPage() {
+    return (
+        <Suspense fallback={<div className="container mx-auto p-4">Chargement...</div>}>
+            <SearchContent />
+        </Suspense>
     );
 }
