@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState, use } from 'react';
+import { useEffect, useState } from 'react';
 import { checkBookExists, fetchBook, getBook } from '@/app/utils/bookCrud';
 import Card from '@/components/card';
 import Notes from '@/components/notes';
@@ -7,7 +7,7 @@ import DetailsControls from '@/components/detailsControls';
 import DetailsReviews from '@/components/detailsReviews';
 
 export default function Details({ params }: { params: { id: string } }) {
-	const { id } = use(params);
+    const { id } = params;
 	const [book, setBook] = useState<any>(null);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
