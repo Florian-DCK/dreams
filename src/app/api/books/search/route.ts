@@ -14,7 +14,7 @@ export async function GET(request: Request) {
         const response = await fetch(
             `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
                 query
-            )}&projection=lite&maxResults=5&langRestrict=fr`
+            )}&projection=lite&maxResults=20&langRestrict=fr`
         );
         if (!response.ok) {
             throw new Error('Erreur lors de la requête API');

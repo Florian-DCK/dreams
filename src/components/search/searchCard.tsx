@@ -28,7 +28,7 @@ export default function SearchCard({ book }: { book: any }) {
 						className="h-48 mr-5 object-contain"
 					/>
 				)}
-				<div className="flex flex-col">
+				<div className="flex flex-col w-full">
 					<span className="flex justify-between w-full mb-5">
 						<p className="text-white opacity-60">
 							{book.volumeInfo.authors?.join(', ')}
@@ -37,7 +37,7 @@ export default function SearchCard({ book }: { book: any }) {
 							{formatDate(book.volumeInfo.publishedDate)}
 						</p>
 					</span>
-					<p className="text-white opacity-60 mt-2">
+					<p className="text-white opacity-60 mt-2 w-full">
 						{truncateText(book.volumeInfo.description, 256) ||
 							'Aucune description disponible.'}
 					</p>
