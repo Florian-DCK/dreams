@@ -2,6 +2,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import SearchCard from '@/components/search/searchCard';
 
 interface Book {
     kind?: string;
@@ -43,19 +44,10 @@ export default function SearchPage() {
             ) : searchResults.length === 0 ? (
                 <p>Aucun résultat trouvé</p>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
                     {searchResults.map((book, index) => (
-                        <div key={index} className="border rounded-lg p-4 shadow-sm">
-                            <h2 className="text-xl font-semibold">{book.volumeInfo.title}</h2>
-                            <p className="text-gray-600">{book.volumeInfo.authors?.join(', ')}</p>
-                            {book.volumeInfo.imageLinks?.thumbnail && (
-                                <img 
-                                    src={book.volumeInfo.imageLinks.thumbnail} 
-                                    alt={`Couverture de ${book.volumeInfo.title}`}
-                                    className="mt-2 h-48 object-contain"
-                                />
-                            )}
-                        </div>
+                        <SearchCard key={index} book={book} />
                     ))}
                 </div>
             )}
