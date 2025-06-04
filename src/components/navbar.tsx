@@ -129,7 +129,7 @@ export default function Navbar() {
 				</form>
 				{isDropdownVisible && searchResults.length > 0 && (
 					<div className="absolute transform -translate-x-1/2 left-1/2 right-0 mt-1 bg-white rounded-md shadow-lg w-[300%] z-50 max-h-60 overflow-y-auto">
-						{[...searchResults].reverse().map((result, index) => (
+						{[...searchResults].map((result, index) => (
 							<div key={index} className="">
 									
 								<a
