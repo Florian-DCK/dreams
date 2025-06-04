@@ -5,6 +5,7 @@ import { debounce } from 'lodash';
 import { LogOut, Menu, User } from 'lucide-react';
 import { signOut } from '@/app/actions/auth';
 import Link from 'next/link';
+import Image from 'next/image';
 
 import {
 	DropdownMenu,
@@ -110,7 +111,7 @@ export default function Navbar() {
 	return (
 		<div className="flex justify-between items-center p-4 bg-primary shadow-[0_10px_10px_-10px_rgba(0,0,0,0.1)]">
 			<Link href="/">
-				<h1 className="text-lg font-bold text-background">Dreams</h1>
+				<Image src='dreamsInline.svg' alt='Dreams' width={100} height={1} />
 			</Link>
 
 			<div className="relative" ref={searchRef}>
