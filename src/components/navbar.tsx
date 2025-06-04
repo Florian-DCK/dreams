@@ -131,18 +131,30 @@ export default function Navbar() {
 					<div className="absolute transform -translate-x-1/2 left-1/2 right-0 mt-1 bg-white rounded-md shadow-lg w-[300%] z-50 max-h-60 overflow-y-auto">
 						{[...searchResults].reverse().map((result, index) => (
 							<div key={index} className="">
+									
 								<a
 									key={index}
 									href={`/details/${result.id}`}
-									className="p-2 hover:bg-gray-100 flex flex-col">
-									{result.volumeInfo.title}
-									{result.volumeInfo.authors &&
-										result.volumeInfo.authors.length > 0 && (
-											<span className="text-sm text-gray-500">
-												{' '}
-												- {result.volumeInfo.authors.join(', ')}
-											</span>
+									className="p-2 hover:bg-gray-100 flex">
+									{result.volumeInfo.imageLinks &&
+										result.volumeInfo.imageLinks.thumbnail && (
+											<img
+												src={result.volumeInfo.imageLinks.thumbnail}
+												alt={result.volumeInfo.title}
+												className="w-16 h-24 object-cover mr-2"
+											/>
+									)}
+									<div className="flex flex-col gap-1">
+										{result.volumeInfo.title}
+										{result.volumeInfo.authors &&
+											result.volumeInfo.authors.length > 0 && (
+												<span className="text-sm text-gray-500">
+													{' '}
+													- {result.volumeInfo.authors.join(', ')}
+												</span>
 										)}
+									</div>
+
 								</a>
 								<hr className=" border-gray-200" />
 							</div>
