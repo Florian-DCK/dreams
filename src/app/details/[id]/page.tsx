@@ -82,7 +82,7 @@ export default function Details({ params }: PageProps) {
 
                         <div className="flex">
                             {book.description && (
-                                <p className="text-base leading-relaxed whitespace-pre-line">
+                                <p className="leading-relaxed whitespace-pre-line">
                                     {book.cover_image && (
                                         <img
                                             src={book.cover_image}
@@ -106,7 +106,7 @@ export default function Details({ params }: PageProps) {
 						<h2 className="text-2xl font-bold mb-4 ">
 							Informations du livre :
 						</h2>
-						<div className="text-base space-y-2">
+						<div className=" space-y-2">
 							{book.published_date && (
 								<p>
 									<span className="font-semibold">Date de publication :</span>{' '}

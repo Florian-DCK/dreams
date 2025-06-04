@@ -94,7 +94,7 @@ function AddToLibraryModal({ isOpen, setIsOpen, bookId, note, review, customTitl
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogContent className="sm:max-w-md bg-dark text-background rounded-2xl">
+            <DialogContent className="sm:max-w-md bg-dark text-foreground rounded-2xl">
                 <DialogHeader>
                     <DialogTitle className='text-center'>Ajouter à une bibliothèque</DialogTitle>
                     <DialogDescription className='text-center'>
@@ -124,7 +124,7 @@ function AddToLibraryModal({ isOpen, setIsOpen, bookId, note, review, customTitl
                         <label className="flex flex-col">
                             <span className="text-sm font-medium">Bibliothèque</span>
                             <select
-                                className="mt-1 p-2 border rounded bg-background text-primary"
+                                className="mt-1 p-2 border rounded bg-background text-foreground"
                                 value={selectedLibrary}
                                 onChange={(e) => setSelectedLibrary(e.target.value)}
                                 required
@@ -146,7 +146,7 @@ function AddToLibraryModal({ isOpen, setIsOpen, bookId, note, review, customTitl
                             >
                                 Annuler
                             </Button>
-                            <Button type="submit" className="bg-primary text-background" disabled={isLoading}>
+                            <Button type="submit" className="bg-primary text-foreground" disabled={isLoading}>
                                 {isLoading ? 'Ajout en cours...' : 'Ajouter'}
                             </Button>
                         </DialogFooter>

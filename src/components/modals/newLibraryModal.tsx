@@ -73,7 +73,7 @@ function NewLibraryModal({ isOpen, setIsOpen }: {
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogContent className="sm:max-w-md bg-dark text-background rounded-2xl">
+            <DialogContent className="sm:max-w-md bg-dark text-foreground rounded-2xl">
                 <DialogHeader>
                     <DialogTitle className='text-center'>Créer une nouvelle bibliothèque</DialogTitle>
                     <DialogDescription className='text-center'>
@@ -88,7 +88,7 @@ function NewLibraryModal({ isOpen, setIsOpen }: {
                         <span className="text-sm font-medium">Nom de la bibliothèque</span>
                         <input
                             type="text"
-                            className="mt-1 p-2 border rounded bg-background text-primary"
+                            className="mt-1 p-2 border rounded bg-background text-foreground"
                             placeholder="Entrez le nom de votre bibliothèque"
                             required
                             maxLength={30}
@@ -99,7 +99,7 @@ function NewLibraryModal({ isOpen, setIsOpen }: {
                     <label className="flex flex-col">
                         <span className="text-sm font-medium">Description</span>
                         <textarea
-                            className="mt-1 p-2 border rounded bg-background text-primary"
+                            className="mt-1 p-2 border rounded bg-background text-foreground"
                             placeholder="Entrez une description de votre bibliothèque"
                             rows={3}
                             value={description}
@@ -110,7 +110,7 @@ function NewLibraryModal({ isOpen, setIsOpen }: {
                         <span className="text-sm font-medium">Couleur</span>
                         <input
                             type="color"
-                            className="mt-1 p-2 border rounded bg-background text-primary"
+                            className="mt-1 p-2 border rounded bg-background text-foreground size-10"
                             value={color}
                             onChange={(e) => setColor(e.target.value)}
                         />
@@ -123,7 +123,7 @@ function NewLibraryModal({ isOpen, setIsOpen }: {
                         >
                             Annuler
                         </Button>
-                        <Button type="submit" className="bg-primary text-background" disabled={isLoading}>
+                        <Button type="submit" className="bg-primary text-foreground" disabled={isLoading}>
                             {isLoading ? 'Création...' : 'Créer'}
                         </Button>
                     </DialogFooter>

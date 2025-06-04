@@ -5,7 +5,7 @@ import { debounce } from 'lodash';
 import { LogOut, Menu, User } from 'lucide-react';
 import { signOut } from '@/app/actions/auth';
 import Link from 'next/link';
-import Image from 'next/image';
+import { LogoInline } from './svg/logo';
 
 import {
 	DropdownMenu,
@@ -109,9 +109,9 @@ export default function Navbar() {
 	};
 
 	return (
-		<div className="flex justify-between items-center p-4 bg-primary shadow-[0_10px_10px_-10px_rgba(0,0,0,0.1)]">
-			<Link href="/">
-				<Image src='dreamsInline.svg' alt='Dreams' width={100} height={1} />
+		<div className="flex justify-between items-center p-4 bg-transparent shadow-[0_10px_10px_-10px_rgba(0,0,0,0.1)]">
+			<Link href="/" >
+				<LogoInline className="w-35 h-fit text-primary" />
 			</Link>
 
 			<div className="relative" ref={searchRef}>
@@ -123,20 +123,20 @@ export default function Navbar() {
 						value={searchQuery}
 						onChange={handleSearchChange}
 						onFocus={handleFocus}
-						className="p-2 border-b-2 border-gray-300 outline-none focus:border-gray-500 transition duration-200 text-background"
+						className="p-2 bg-primary rounded-full outline-none focus:border-gray-500 transition duration-200 text-foreground w-96"
 						placeholder="Rechercher..."
 						autoComplete="off"
 					/>
 				</form>
 				{isDropdownVisible && searchResults.length > 0 && (
-					<div className="absolute transform -translate-x-1/2 left-1/2 right-0 mt-1 bg-white rounded-md shadow-lg w-[300%] z-50 max-h-60 overflow-y-auto">
+					<div className="absolute transform -translate-x-1/2 left-1/2 right-0 mt-1 bg-white rounded-md shadow-lg w-[300%] z-50 max-h-100 overflow-y-auto">
 						{[...searchResults].map((result, index) => (
 							<div key={index} className="">
 									
 								<a
 									key={index}
 									href={`/details/${result.id}`}
-									className="p-2 hover:bg-gray-100 flex">
+									className="p-2 bg-popover hover:bg-primary flex">
 									{result.volumeInfo.imageLinks &&
 										result.volumeInfo.imageLinks.thumbnail && (
 											<img
@@ -149,7 +149,7 @@ export default function Navbar() {
 										{result.volumeInfo.title}
 										{result.volumeInfo.authors &&
 											result.volumeInfo.authors.length > 0 && (
-												<span className="text-sm text-gray-500">
+												<span className="text-sm text-gray-200">
 													{' '}
 													- {result.volumeInfo.authors.join(', ')}
 												</span>
@@ -157,7 +157,7 @@ export default function Navbar() {
 									</div>
 
 								</a>
-								<hr className=" border-gray-200" />
+								<hr className=" border-gray-700" />
 							</div>
 						))}
 					</div>
@@ -170,14 +170,14 @@ export default function Navbar() {
 							<div className="flex items-center gap-3">
 								<a
 									href="/profile"
-									className="hover:text-gray-400 text-background">
+									className="hover:text-light text-lg font-bold text-primary">
 									{session.username}
 								</a>
 								<DropdownMenu>
-									<DropdownMenuTrigger>
-										<Menu color="background" />
-									</DropdownMenuTrigger>
-									<DropdownMenuContent className=" w-56 rounded">
+                                    <DropdownMenuTrigger asChild>
+                                        <Menu color='#415a77' size={30} />
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent className=" w-56 rounded">
 										<DropdownMenuItem className=" rounded flex justify-between">
 											<span>Mon compte</span>
 											<User />

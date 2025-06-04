@@ -2,7 +2,7 @@ export default function Button({ onClick , children, className = '', type='butto
     return (
         <button
             onClick={onClick}
-            className={`bg-secondary flex text-white px-4 py-2 rounded-2xl hover:bg-dark transition-colors ${className}`}
+            className={`bg-secondary flex text-white px-4 py-2 rounded-2xl hover:bg-dark transition-colors cursor-pointer ${className}`}
             type={type}
             disabled={disabled}
         >

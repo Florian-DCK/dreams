@@ -49,15 +49,15 @@ export default function SearchCard({ book }: { book: any }) {
 					editable={false}
 				/>
 				<span className="flex items-center space-x-2">
-					<Button className=" space-x-2" onClick={handleAddToLibrary}>
-						<Plus />
-						<span>Ajouter</span>
-					</Button>
 					<Button
 						onClick={() => router.push(`/details/${book.id}`)}
 						className="space-x-2">
 						<NotebookTabs />
 						<span>Voir les détails</span>
+					</Button>
+					<Button className=" space-x-2" onClick={handleAddToLibrary}>
+						<Plus />
+						<span>Ajouter</span>
 					</Button>
 				</span>
 			</div>
