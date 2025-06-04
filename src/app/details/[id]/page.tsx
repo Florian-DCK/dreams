@@ -3,9 +3,9 @@
 import { useEffect, useState } from 'react';
 import { checkBookExists, fetchBook, getBook } from '@/app/utils/bookCrud';
 import Card from '@/components/card';
-import Notes from '@/components/notes';
-import DetailsControls from '@/components/detailsControls';
-import DetailsReviews from '@/components/detailsReviews';
+import Notes from '@/components/details/notes';
+import DetailsControls from '@/components/details/detailsControls';
+import DetailsReviews from '@/components/details/detailsReviews';
 
 type PageProps = {
   params: {
@@ -59,12 +59,12 @@ export default function Details({ params }: PageProps) {
             <div className="w-[90%] mx-auto px-8 rounded flex flex-col md:flex-row gap-8 ">
                 <section className='flex-1 flex-col gap-4 space-y-5'>
                     <Card className="flex-1 flex flex-col gap-4">
-                        <h1 className="text-3xl font-extrabold mb-2 text-black">
+                        <h1 className="text-3xl font-extrabold mb-2">
                             {book.title}
                         </h1>
                         <div className="flex">
                             {book.description && (
-                                <p className="text-black text-base leading-relaxed whitespace-pre-line">
+                                <p className="text-base leading-relaxed whitespace-pre-line">
                                     {book.cover_image && (
                                         <img
                                             src={book.cover_image}
@@ -77,17 +77,17 @@ export default function Details({ params }: PageProps) {
                             )}
                         </div>
                     </Card>
-                    <DetailsControls className="flex-1 self-start" />
+                    <DetailsControls className="flex-1 self-start" book={book.id} />
                 </section>
 				{/* Séparateur vertical */}
-				{/* <div className="hidden md:block w-px bg-[#3f3f3f] mx-6"></div> */}
+
 				{/* Colonne droite : infos */}
 				<section className='flex-1 flex flex-col flex-start space-y-5'>
 					<Card className="self-start w-full">
-						<h2 className="text-2xl font-bold mb-4 text-black">
+						<h2 className="text-2xl font-bold mb-4 ">
 							Informations du livre :
 						</h2>
-						<div className="text-black text-base space-y-2">
+						<div className="text-base space-y-2">
 							{book.published_date && (
 								<p>
 									<span className="font-semibold">Date de publication :</span>{' '}

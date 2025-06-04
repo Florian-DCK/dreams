@@ -1,4 +1,4 @@
-import { Star } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { useState } from 'react';
 
 export default function Stars({ className = "", note = 0, editable = true}: { className?: string, note?: number, editable?: boolean }) {
@@ -8,7 +8,7 @@ export default function Stars({ className = "", note = 0, editable = true}: { cl
     return (
         <div className='flex gap-1'>
             {[1, 2, 3, 4, 5].map((value) => (
-                <Star
+                <Sparkles
                     key={value}
                     className={`transition-transform duration-300 ${value <= rating ? "fill-yellow-500 text-yellow-500" : "text-yellow-500"} cursor-pointer ${className} ${animatedStar === value ? "scale-125" : ""}`}
                     onClick={() => {

@@ -1,4 +1,4 @@
-import Card from "./card";
+import Card from "../card";
 import Review from "./review";
 
 export default function DetailsReviews({

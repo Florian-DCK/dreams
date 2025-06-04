@@ -1,5 +1,5 @@
 import Card from "@/components/card";
-import Stars from "./stars";
+import Stars from "../stars";
 
 export default function Notes({ className = "" }: { className?: string }) {
     return (
