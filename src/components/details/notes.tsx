@@ -1,17 +1,26 @@
 import Card from "@/components/card";
 import Stars from "../stars";
 import { useState, useEffect } from "react";
+import { set } from "lodash";
 
 export default function Notes({ 
     className = "", 
     onReviewChange,
-    onRatingChange 
+    onRatingChange,
+    note = 0,
+    userReview = ""
 }: { 
     className?: string;
     onReviewChange?: (review: string) => void;
     onRatingChange?: (rating: number) => void;
+    note?: number;
+    userReview?: string;
 }) {
     const [review, setReview] = useState("");
+
+    useEffect(() => {
+        setReview(userReview);
+    }, [userReview]);
     
     const handleReviewChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const newReview = e.target.value;
@@ -25,7 +34,7 @@ export default function Notes({
         <Card className={`flex flex-col py-0 ${className}`}>
             <div className="flex items-center justify-between mb-4">
                 <h1 className="text-2xl font-bold text-left">Notes</h1>
-                <Stars onRatingChange={onRatingChange} />
+                <Stars onRatingChange={onRatingChange} note={note} />
             </div>
             <textarea 
                 name="notes" 
