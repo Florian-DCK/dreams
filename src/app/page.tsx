@@ -47,7 +47,7 @@ export default function Home() {
 						</div>
 					) : (
 						libraries.map((library, index) => (
-							<Bookshelf key={index} className="mb-4">
+							<Bookshelf key={index} className="mb-4" library={library}>
 								{library.books.map((book: any, bookIndex: number) => (
 									<Book
 										key={bookIndex}
@@ -55,7 +55,6 @@ export default function Home() {
 										url={`/library/${library.id}/book/${book.book_id}`}
 									/>
 								))}
-								<Tag text={library.name} className="absolute z-10 mb-2 -bottom-[34px]" color={library.color} link={`/library/${library.id}`} />
 							</Bookshelf>
 						))
 					)
