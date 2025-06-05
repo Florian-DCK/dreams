@@ -4,7 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-	--background: #1b1b2d;
+	--background: #1c1b2d;
 	--foreground: white;
 	--primary: #415a77;
 	--secondary: #0d1b2a;
@@ -248,28 +248,28 @@ body {
 
 @keyframes showLogin {
 	0% {
-		background: #d7e7f1;
+		background: var(--light);
 		transform: translate(40%, 10px);
 	}
 	50% {
 		transform: translate(0, 0);
 	}
 	100% {
-		background-color: #fff;
+		background-color: var(--dark);
 		transform: translate(35%, -20px);
 	}
 }
 
 @keyframes hideLogin {
 	0% {
-		background-color: #fff;
+		background-color: var(--dark);
 		transform: translate(35%, -20px);
 	}
 	50% {
 		transform: translate(0, 0);
 	}
 	100% {
-		background: #d7e7f1;
+		background: var(--light);
 		transform: translate(40%, 10px);
 	}
 }
@@ -284,28 +284,28 @@ body {
 
 @keyframes showSignup {
 	0% {
-		background: #d7e7f1;
+		background: var(--light);
 		transform: translate(-40%, 10px) scaleY(.8);
 	}
 	50% {
 		transform: translate(0, 0) scaleY(.8);
 	}
 	100% {
-		background-color: #fff;
+		background-color: var(--dark);
 		transform: translate(-35%, -20px) scaleY(1);
 	}
 }
 
 @keyframes hideSignup {
 	0% {
-		background-color: #fff;
+		background-color: var(--dark);
 		transform: translate(-35%, -20px) scaleY(1);
 	}
 	50% {
 		transform: translate(0, 0) scaleY(.8);
 	}
 	100% {
-		background: #d7e7f1;
+		background: var(--light);
 		transform: translate(-40%, 10px) scaleY(.8);
 	}
 }
@@ -347,7 +347,7 @@ body {
 
 .input-block label {
 	font-size: 14px;
-  color: #a1b4b4;
+  color: var(--foreground);
 }
 
 .input-block input {
@@ -358,10 +358,9 @@ body {
 	padding-left: 15px;
 	font-size: 16px;
 	line-height: 40px;
-	color: #3b4465;
-  background: #eef9fe;
-  border: 1px solid #cddbef;
-  border-radius: 2px;
+	color: var(--foreground);
+  	background: var(--primary);
+  	border-radius: 10px;
 }
 
 .form [type='submit'] {
