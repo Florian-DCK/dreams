@@ -5,7 +5,7 @@ import Card from '@/components/card';
 import Notes from '@/components/details/notes';
 import DetailsReviews from '@/components/details/detailsReviews';
 import Button from '@/components/button';
-import { PenLine, Minus} from 'lucide-react';
+import { PenLine, Minus, Truck} from 'lucide-react';
 import { AddToLibraryModalContext } from '@/components/modals/providers';
 
 type PageProps = {
@@ -62,7 +62,7 @@ export default function Details({ params }: {
 
     return (
         <div className="items-center justify-center mt-5">
-            <div className="w-[90%] mx-auto px-8 rounded flex flex-col md:flex-row gap-8 ">
+            <div className="w-[90%] mx-auto rounded flex flex-col md:flex-row gap-8 ">
                 <section className='flex-1 flex-col gap-4 space-y-5'>
                     <Card className="flex-1 flex flex-col gap-4">
                         <span className='flex items-center gap-3 w-full'>
@@ -88,9 +88,10 @@ export default function Details({ params }: {
                                 </p>
                             )}
                         </div>
-                        <div className='flex items-center justify-between mt-4'>
-                            <Button className='!bg-red-400 gap-2'><Minus /><span>Retirer</span></Button>
+                        <div className='flex self-end space-x-3 items-center mt-4'>
                             <Button className='gap-2'><PenLine /><span>Modifier</span></Button>
+                            <Button className='gap-2'><Truck /><span>Déplacer</span></Button>
+                            <Button className='!bg-red-400 gap-2'><Minus /><span>Retirer</span></Button>
                         </div>
                     </Card>
 
@@ -172,12 +173,14 @@ export default function Details({ params }: {
                     {/* Section du canvas */}
                 </section>
             </div>
-            <Card className='mt-8 p-6 h-screen'>
-                <h2 className="text-2xl font-bold mb-4">Canvas</h2>
-                <p className="text-gray-600">
-                    Cette section est réservée à l'édition du livre. Vous pouvez y ajouter des notes, des marque-pages, ou d'autres informations pertinentes.
-                </p>
-            </Card>
+            <div className='h-screen w-[90%] items-center justify-center mx-auto '>
+                <Card className='mt-8 p-6 h-full'>
+                    <h2 className="text-2xl font-bold mb-4">Canvas</h2>
+                    <p >
+                        Cette section est réservée à la création artistique.
+                    </p>
+                </Card>
+            </div>
         </div>
     );
 }
