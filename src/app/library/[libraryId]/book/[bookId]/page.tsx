@@ -320,21 +320,7 @@ export default function Details({
 							)}
 							{book.author && (
 								<p>
-									<span className="font-semibold">Auteur :</span>{' '}
-									{Array.isArray(book.author) ? (
-										book.author.map((a: string, i: number) => (
-											<span key={a}>
-												<a href="#" className="underline hover:text-blue-700">
-													{a}
-												</a>
-												{i < book.details.author.length - 1 && ', '}
-											</span>
-										))
-									) : (
-										<a href="#" className="underline hover:text-blue-700">
-											{book.details.author}
-										</a>
-									)}
+									<span className="font-semibold">Auteur : {book.author}</span>{' '}
 								</p>
 							)}
 							{book.details.publisher && (

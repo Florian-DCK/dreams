@@ -46,11 +46,12 @@ export default function Details({ params }: PageProps) {
                     await fetchBook(id);
                     const book = await getBook(id);
                     setBook(book);
-                    setEditableTitle(book.title); // Initialiser le titre éditable
+                    setEditableTitle(book.title);
                 } else {
                     const bookData = await getBook(id);
                     setBook(bookData);
-                    setEditableTitle(bookData.title); // Initialiser le titre éditable
+                    setEditableTitle(bookData.title);
+					
                 }
             } catch (error) {
                 console.error(
@@ -166,21 +167,7 @@ export default function Details({ params }: PageProps) {
 							)}
 							{book.author && (
 								<p>
-									<span className="font-semibold">Auteur :</span>{' '}
-									{Array.isArray(book.author) ? (
-										book.author.map((a: string, i: number) => (
-											<span key={a}>
-												<a href="#" className="underline hover:text-blue-700">
-													{a}
-												</a>
-												{i < book.author.length - 1 && ', '}
-											</span>
-										))
-									) : (
-										<a href="#" className="underline hover:text-blue-700">
-											{book.author}
-										</a>
-									)}
+									<span className="font-semibold">Auteur : {book.author}</span>{' '}
 								</p>
 							)}
 							{book.publisher && (
