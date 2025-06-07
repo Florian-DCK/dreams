@@ -49,6 +49,8 @@ export default function Details({
 				const data = await response.json();
 				setBook(data);
 				setEditableTitle(data.custom_title || data.details.title);
+				setRating(data.note || 0);
+				setReview(data.review || '');
 				setLoading(false);
 			} catch (err) {
 				setError('Erreur lors de la récupération des détails du livre.');
