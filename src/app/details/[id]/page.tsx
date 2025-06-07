@@ -6,9 +6,10 @@ import Card from '@/components/card';
 import Notes from '@/components/details/notes';
 import DetailsReviews from '@/components/details/detailsReviews';
 import Button from '@/components/button';
-import { Plus , PenLine} from 'lucide-react';
+import { Plus , PenLine, Palette} from 'lucide-react';
 import { AddToLibraryModalContext } from '@/components/modals/providers';
 import Stars from '@/components/stars';
+import { useRouter } from 'next/navigation';
 
 type PageProps = {
   params: {
@@ -27,6 +28,9 @@ export default function Details({ params }: PageProps) {
 	const [isPublic, setIsPublic] = useState<boolean>(false);
     const [editableTitle, setEditableTitle] = useState<string>("");
     const { openModal } = useContext(AddToLibraryModalContext);
+	const router = useRouter();
+
+	const [customData, setCustomData] = useState<any>(null);
 
 	const [usersReviews, setUsersReviews] = useState<any[]>([]);
 	const [medianeNote, setMedianeNote] = useState<number>(0);
@@ -51,7 +55,7 @@ export default function Details({ params }: PageProps) {
                     const bookData = await getBook(id);
                     setBook(bookData);
                     setEditableTitle(bookData.title);
-					
+                    
                 }
             } catch (error) {
                 console.error(
@@ -64,30 +68,58 @@ export default function Details({ params }: PageProps) {
             }
         };
 
-		const fetchUsersReviews = async () => {
-			try {
-				const response = await fetch(`/api/books/review?bookId=${id}`);
-				if (!response.ok) {
-					throw new Error('Erreur lors de la récupération des avis des utilisateurs');
-				}
-				const data = await response.json();
-				setUsersReviews(data);
-				
-				// Calcul de la moyenne des notes
-				if (data && data.length > 0) {
-					const sum = data.reduce((acc, review) => acc + review.note, 0);
-					const average = sum / data.length;
-					setMedianeNote(average);
-				}
-				setNbNotes(data.length);
-			} catch (error) {
-				console.error('Erreur lors de la récupération des avis des utilisateurs:', error);
-			}
-		}
-
         fetchBookDetails();
-		fetchUsersReviews();
     }, [id]);
+
+    // Créer un useEffect séparé qui s'exécute quand book est disponible
+    useEffect(() => {
+        if (book) {
+            const fetchCustomData = async () => {
+                try {
+                    const response = await fetch(`/api/books/fetchCustom?id=${id}`);
+                    if (!response.ok) {
+                        throw new Error('Erreur lors de la récupération des données personnalisées du livre');
+                    }
+                    const data = await response.json();
+                    setCustomData(data);
+                    
+                    // Précharger avec les données personnalisées si disponibles
+                    if (data && data.length > 0) {
+                        const customBook = data[0];
+                        setEditableTitle(customBook.custom_title || book.title);
+                        setRating(customBook.note || 0);
+                        setReview(customBook.review || "");
+                        setIsPublic(customBook.review_public === 'Y');
+                    }
+                } catch (error) {
+                    console.error('Erreur lors de la récupération des données personnalisées du livre:', error);
+                }
+            };
+
+            const fetchUsersReviews = async () => {
+                try {
+                    const response = await fetch(`/api/books/review?bookId=${id}`);
+                    if (!response.ok) {
+                        throw new Error('Erreur lors de la récupération des avis des utilisateurs');
+                    }
+                    const data = await response.json();
+                    setUsersReviews(data);
+                    
+                    if (data && data.length > 0) {
+                        const sum = data.reduce((acc, review) => acc + review.note, 0);
+                        const average = sum / data.length;
+                        setMedianeNote(average);
+                    }
+                    setNbNotes(data.length);
+                } catch (error) {
+                    console.error('Erreur lors de la récupération des avis des utilisateurs:', error);
+                }
+            };
+
+            fetchCustomData();
+            fetchUsersReviews();
+        }
+    }, [book, id]);
 
     if (loading)
         return <div className="container mx-auto p-4">Chargement...</div>;
@@ -106,6 +138,7 @@ export default function Details({ params }: PageProps) {
 							<input 
                             className="text-3xl font-extrabold mb-2 w-full" 
                             value={editableTitle} 
+                            disabled={customData && customData.length > 0}
                             onChange={(e) => setEditableTitle(e.target.value)} 
                         />
 						</span>
@@ -124,7 +157,15 @@ export default function Details({ params }: PageProps) {
                                 </p>
                             )}
                         </div>
-						<Button onClick={handleAddToLibrary} ><Plus /><span>Ajouter à l'une de mes bibliothèques</span></Button>
+						{ (!customData || customData.length === 0) && (
+							<Button onClick={handleAddToLibrary} ><Plus /><span>Ajouter à l'une de mes bibliothèques</span></Button>
+						)}
+						{customData && customData.length > 0 && (
+							<Button onClick={() => router.push(`/library/${customData[0].library_id}/book/${book.id}`)} className="bg-blue-500 hover:bg-blue-600 text-white gap-2">
+								<Palette />
+								<span>Aller à ma page perso</span>
+							</Button>
+						)}
                     </Card>
 
                 </section>
@@ -195,8 +236,11 @@ export default function Details({ params }: PageProps) {
                         className="flex-1"
                         onReviewChange={setReview}
                         onRatingChange={setRating}
-						onPublicChange={setIsPublic}
-						IsPublic={isPublic}
+                        onPublicChange={setIsPublic}
+                        IsPublic={isPublic}
+                        note={rating}
+                        initialReview={review}
+						isAlreadyReviewed={customData && customData.length > 0}
                     />
 				</section>
 			</div>
