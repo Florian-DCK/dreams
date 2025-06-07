@@ -141,7 +141,7 @@ export default function Details({ params }: PageProps) {
 										<span className="text-sm text-right text-gray-500">
 											{nbNotes} {nbNotes > 1 ? 'notes' : 'note'}
 										</span>
-										<Stars note={medianeNote}></Stars>
+										<Stars note={medianeNote} editable={false}></Stars>
 									</span>
 								)}
 						</span>
