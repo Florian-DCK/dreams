@@ -48,8 +48,10 @@ export default class Database{
         try {
             const db = await this.connect();
             const [rows] = await db.query(sql, params);
+            await this.close();
             return rows;
         } catch (error) {
+            await this.close();
             console.error('Database query failed:', error);
             throw error;
         }
