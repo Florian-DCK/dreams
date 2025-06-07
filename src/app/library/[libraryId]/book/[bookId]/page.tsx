@@ -52,7 +52,7 @@ export default function Details({
 				setEditableTitle(data.custom_title || data.details.title);
 				setRating(data.note || 0);
 				setReview(data.review || '');
-				setIsPublic(data.is_public || false);
+				setIsPublic(data.review_public || false);
 				setLoading(false);
 			} catch (err) {
 				setError('Erreur lors de la récupération des détails du livre.');
