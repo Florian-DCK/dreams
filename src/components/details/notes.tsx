@@ -42,7 +42,7 @@ export default function Notes({
     return (
         <Card className={`flex flex-col py-0 ${className}`}>
             <div className="flex items-center justify-between mb-4">
-                <h1 className="text-2xl font-bold text-left">Notes</h1>
+                <h1 className="text-2xl font-bold text-left">Votre Avis</h1>
                 <Stars onRatingChange={onRatingChange} note={note} />
             </div>
             <textarea 
