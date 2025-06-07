@@ -1,11 +1,12 @@
 // @ts-nocheck
 'use client';
 import { useState, useContext, useEffect, use } from 'react';
+import { useRouter } from 'next/navigation';
 import Card from '@/components/card';
 import Notes from '@/components/details/notes';
 import DetailsReviews from '@/components/details/detailsReviews';
 import Button from '@/components/button';
-import { PenLine, Minus, Library } from 'lucide-react';
+import { PenLine, Minus, Library, NotebookTabs } from 'lucide-react';
 import { AddToLibraryModalContext } from '@/components/modals/providers';
 
 type PageProps = {
@@ -35,6 +36,7 @@ export default function Details({
 	const [isUpdating, setIsUpdating] = useState<boolean>(false);
 	const [isPublic, setIsPublic] = useState<boolean>(false);
 	const { openModal } = useContext(AddToLibraryModalContext);
+	const router = useRouter();
 
 	useEffect(() => {
 		const fetchBookDetails = async () => {
@@ -278,6 +280,10 @@ export default function Details({
 							<Button className="!bg-red-400 gap-2" onClick={handleDelete}>
 								<Minus />
 								<span>Retirer</span>
+							</Button>
+							<Button className='gap-2' onClick={() => router.push(`/details/${book.details.id}`)}>
+                                <NotebookTabs />
+								Accéder aux détails
 							</Button>
 						</div>
 					</Card>
