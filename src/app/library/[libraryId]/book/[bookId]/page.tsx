@@ -1,11 +1,11 @@
 // @ts-nocheck
 'use client';
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect, use } from 'react';
 import Card from '@/components/card';
 import Notes from '@/components/details/notes';
 import DetailsReviews from '@/components/details/detailsReviews';
 import Button from '@/components/button';
-import { PenLine, Minus, Truck} from 'lucide-react';
+import { PenLine, Minus, Library} from 'lucide-react';
 import { AddToLibraryModalContext } from '@/components/modals/providers';
 
 type PageProps = {
@@ -21,18 +21,17 @@ export default function Details({ params }: {
     bookId: string;
   }
 }) {
-    const { libraryId, bookId } = params;
+    const { libraryId, bookId } = use(params);
     const [book, setBook] = useState<any>(null);
     const [loading, setLoading] = useState<boolean>(true);
+    const [libraryLoading, setLibraryLoading] = useState<boolean>(true);
+    const [libraries, setLibraries] = useState<any[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [rating, setRating] = useState<number>(0);
     const [review, setReview] = useState<string>("");
     const [editableTitle, setEditableTitle] = useState<string>("");
+    const [isUpdating, setIsUpdating] = useState<boolean>(false);
     const { openModal } = useContext(AddToLibraryModalContext);
-    
-    const handleAddToLibrary = () => {
-        openModal(book.id, rating, review, editableTitle);
-    };
     
     useEffect(() => {
         const fetchBookDetails = async () => {
@@ -50,8 +49,110 @@ export default function Details({ params }: {
                 setLoading(false);
             }
         };
+        const fetchLibraries = async () => {
+            try {
+				setLibraryLoading(true);
+				const response = await fetch('/api/library/retrieve');
+				if (!response.ok) {
+					throw new Error('Failed to fetch libraries');
+				}
+				const data = await response.json();
+				if (Array.isArray(data)) {
+					setLibraries(data);
+				} else {
+					console.error('Unexpected data format:', data);
+				}
+				setLibraryLoading(false);
+				console.log('Libraries fetched successfully:', data);
+			} catch (error) {
+				console.error('Error fetching libraries:', error);
+				setLibraryLoading(false);
+			}
+        }
         fetchBookDetails();
+        fetchLibraries();
     }, [bookId]);
+
+    const handleLibraryChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const newLibraryId = e.target.value;
+        try {
+            if (newLibraryId !== libraryId) {
+                setIsUpdating(true);
+                setError(null);
+                
+                const response = await fetch(`/api/library/moveBook`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        bookId: bookId,
+                        libraryId: newLibraryId,
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erreur lors du déplacement du livre vers la nouvelle bibliothèque.');
+                }
+                
+                const data = await response.json();
+                
+                // Rediriger vers la nouvelle URL plutôt que de modifier l'historique
+                window.location.href = `/library/${newLibraryId}/book/${bookId}`;
+            }
+        } catch (err) {
+            setError('Erreur lors du changement de bibliothèque.');
+            console.error(err);
+            setIsUpdating(false);
+        }
+    }
+
+    const handleModifications = async () => {
+        try {
+            setIsUpdating(true);
+            setError(null);
+            
+            const response = await fetch(`/api/library/addBook`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    bookId: bookId,
+                    libraryId,
+                    note: rating,
+                    review,
+                    customTitle: editableTitle,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Erreur lors de la mise à jour du livre dans la bibliothèque.');
+            }
+            
+            const data = await response.json();
+            
+            // Mise à jour complète du livre avec les nouvelles données
+            setBook(prevBook => ({
+                ...prevBook,
+                custom_title: editableTitle,
+                note: rating,
+                review: review
+            }));
+            
+            // Remplacer l'alerte par une notification moins intrusive
+            // ou supprimer complètement pour éviter les problèmes de rendu
+            setTimeout(() => {
+                alert('Modifications enregistrées avec succès');
+            }, 100);
+            
+        } catch (err) {
+            setError('Erreur lors de la mise à jour du livre.');
+            console.error(err);
+        } finally {
+            setIsUpdating(false);
+        }
+    };
 
     if (loading)
         return <div className="container mx-auto p-4">Chargement...</div>;
@@ -89,8 +190,28 @@ export default function Details({ params }: {
                             )}
                         </div>
                         <div className='flex self-end space-x-3 items-center mt-4'>
-                            <Button className='gap-2'><PenLine /><span>Modifier</span></Button>
-                            <Button className='gap-2'><Truck /><span>Déplacer</span></Button>
+                            <Button 
+                                className='gap-2' 
+                                onClick={handleModifications}
+                                disabled={isUpdating}
+                            >
+                                <PenLine />
+                                <span>{isUpdating ? 'Sauvegarde...' : 'Modifier'}</span>
+                            </Button>
+                            <div className='bg-secondary p-2 px-4 rounded-2xl flex gap-2'>
+                                <label htmlFor="bookLibrary"><Library /></label>
+                                <select name="bookLibrary" id="bookLibrary" className='bg-secondary' onChange={handleLibraryChange} >
+                                    {libraryLoading ? (
+                                        <option disabled>Chargement des bibliothèques...</option>
+                                    ) : (
+                                        libraries.map((library) => (
+                                            <option key={library.id} value={library.id} selected={library.id === libraryId ? 'selected' : ''} className='text-foreground bg-popover'>
+                                                {library.name}
+                                            </option>
+                                        ))
+                                    )}
+                                </select>
+                            </div>
                             <Button className='!bg-red-400 gap-2'><Minus /><span>Retirer</span></Button>
                         </div>
                     </Card>

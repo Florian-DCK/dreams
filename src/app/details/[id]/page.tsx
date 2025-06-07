@@ -1,6 +1,6 @@
 // @ts-nocheck
 'use client';
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect , use} from 'react';
 import { checkBookExists, fetchBook, getBook } from '@/app/utils/bookCrud';
 import Card from '@/components/card';
 import Notes from '@/components/details/notes';
@@ -17,7 +17,7 @@ type PageProps = {
 }
 
 export default function Details({ params }: PageProps) {
-    const { id } = params;
+    const { id } = use(params);
     const [book, setBook] = useState<any>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
