@@ -11,7 +11,7 @@ export default function Notes({
     note = 0,
     userReview = "",
     setIsPublic,
-    isPublic = false
+    isPublic
 }: { 
     className?: string;
     onReviewChange?: (review: string) => void;
@@ -48,20 +48,22 @@ export default function Notes({
                 <Stars onRatingChange={onRatingChange} note={note} />
             </div>
             <div className="flex items-center justify-end mb-2">
-                <div className="flex items-center gap-2">
-                    <span className="text-sm text-muted-foreground">
-                        {isPublic ? "Public" : "Privé"}
-                    </span>
-                    <Toggle 
-                        pressed={isPublic}
-                        onPressedChange={handlePublicChange}
-                        aria-label="Rendre l'avis public ou privé"
-                        variant="default"
-                        className="rounded-[8px] cursor-pointer"
-                    >
-                        {isPublic ? <Globe size={16} /> : <Lock size={16} />}
-                    </Toggle>
-                </div>
+                { (setIsPublic && isPublic !== undefined) &&
+                    <div className="flex items-center gap-2">
+                        <span className="text-sm text-muted-foreground">
+                            {isPublic ? "Public" : "Privé"}
+                        </span>
+                        <Toggle 
+                            pressed={isPublic}
+                            onPressedChange={handlePublicChange}
+                            aria-label="Rendre l'avis public ou privé"
+                            variant="default"
+                            className="rounded-[8px] cursor-pointer"
+                        >
+                            {isPublic ? <Globe size={16} /> : <Lock size={16} />}
+                        </Toggle>
+                    </div>
+                }
             </div>
             <textarea 
                 name="notes" 
