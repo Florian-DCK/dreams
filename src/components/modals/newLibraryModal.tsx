@@ -11,6 +11,8 @@ import {
 } from '@/components/ui/dialog';
 import Button from '../button';
 
+import { NextResponse } from 'next/server';
+
 function NewLibraryModal({ isOpen, setIsOpen }: {
     isOpen: boolean;
     setIsOpen: Dispatch<SetStateAction<boolean>>;
@@ -64,6 +66,10 @@ function NewLibraryModal({ isOpen, setIsOpen }: {
             setName('');
             setDescription('');
             setColor('#ffffff');
+            
+            // Redirection vers la page de la bibliothèque nouvellement créée
+            window.location.href = `/library/${data.id}`;
+            
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Une erreur est survenue');
         } finally {

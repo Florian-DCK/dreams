@@ -88,7 +88,10 @@ function AddToLibraryModal({ isOpen, setIsOpen, bookId, note, review, customTitl
                 throw new Error(data.error || 'Erreur lors de l\'ajout du livre');
             }
 
+            // Effectuer d'abord la redirection, puis fermer la modal
+            window.location.href = `/library/${selectedLibrary}/book/${bookId}`;
             setIsOpen(false);
+            
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Une erreur est survenue');
         } finally {
