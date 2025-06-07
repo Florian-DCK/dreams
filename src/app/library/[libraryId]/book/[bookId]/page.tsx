@@ -33,6 +33,7 @@ export default function Details({
 	const [review, setReview] = useState<string>('');
 	const [editableTitle, setEditableTitle] = useState<string>('');
 	const [isUpdating, setIsUpdating] = useState<boolean>(false);
+	const [isPublic, setIsPublic] = useState<boolean>(false);
 	const { openModal } = useContext(AddToLibraryModalContext);
 
 	useEffect(() => {
@@ -51,6 +52,7 @@ export default function Details({
 				setEditableTitle(data.custom_title || data.details.title);
 				setRating(data.note || 0);
 				setReview(data.review || '');
+				setIsPublic(data.is_public || false);
 				setLoading(false);
 			} catch (err) {
 				setError('Erreur lors de la récupération des détails du livre.');
@@ -79,7 +81,7 @@ export default function Details({
 		};
 		fetchBookDetails();
 		fetchLibraries();
-	}, [bookId]);
+	}, [bookId, libraryId]);
 
 	const handleLibraryChange = async (
 		e: React.ChangeEvent<HTMLSelectElement>
@@ -167,6 +169,7 @@ export default function Details({
 					note: rating,
 					review,
 					customTitle: editableTitle,
+					isPublic,
 				}),
 			});
 
@@ -355,6 +358,8 @@ export default function Details({
 						onRatingChange={setRating}
 						note={book.note || 0}
 						userReview={book.review || ''}
+						setIsPublic={setIsPublic}
+						isPublic={isPublic}
 					/>
 					{/* Section du canvas */}
 				</section>

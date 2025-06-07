@@ -2,6 +2,7 @@ import Card from "@/components/card";
 import Stars from "../stars";
 import { useState, useEffect } from "react";
 import { Toggle } from "@/components/ui/toggle"
+import { Globe, Lock } from "lucide-react";
 
 export default function Notes({ 
     className = "", 
@@ -9,7 +10,8 @@ export default function Notes({
     onRatingChange,
     note = 0,
     userReview = "",
-    setIsPublic
+    setIsPublic,
+    isPublic = false
 }: { 
     className?: string;
     onReviewChange?: (review: string) => void;
@@ -44,6 +46,22 @@ export default function Notes({
             <div className="flex items-center justify-between mb-4">
                 <h1 className="text-2xl font-bold text-left">Votre Avis</h1>
                 <Stars onRatingChange={onRatingChange} note={note} />
+            </div>
+            <div className="flex items-center justify-end mb-2">
+                <div className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground">
+                        {isPublic ? "Public" : "Privé"}
+                    </span>
+                    <Toggle 
+                        pressed={isPublic}
+                        onPressedChange={handlePublicChange}
+                        aria-label="Rendre l'avis public ou privé"
+                        variant="default"
+                        className="rounded-[8px] cursor-pointer"
+                    >
+                        {isPublic ? <Globe size={16} /> : <Lock size={16} />}
+                    </Toggle>
+                </div>
             </div>
             <textarea 
                 name="notes" 
