@@ -73,8 +73,8 @@ export async function POST(request: Request) {
         }
         
         // Vérifier si le livre existe déjà dans une bibliothèque
-        const checkExistingQuery = "SELECT library_id FROM LibraryBooks WHERE book_id = ?";
-        const existingResult = await connection.query(checkExistingQuery, [bookId]);
+        const checkExistingQuery = "SELECT * FROM LibraryBooks JOIN Library ON Library.id = LibraryBooks.library_id WHERE book_id = ? AND user_id = ?";
+        const existingResult = await connection.query(checkExistingQuery, [bookId, session.userId]);
 
         if (existingResult[0] && existingResult[0].length > 0) {
             db.close();

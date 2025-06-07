@@ -107,6 +107,36 @@ export default function Details({ params }: {
         }
     }
 
+    const handleDelete = async () => {
+        try {
+            setIsUpdating(true);
+            setError(null);
+            
+            const response = await fetch(`/api/library/removeBook`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    bookId: bookId,
+                    libraryId,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Erreur lors de la suppression du livre de la bibliothèque.');
+            }
+            
+            // Rediriger vers la page de la bibliothèque après la suppression
+            window.location.href = `/library/${libraryId}`;
+        } catch (err) {
+            setError('Erreur lors de la suppression du livre.');
+            console.error(err);
+        } finally {
+            setIsUpdating(false);
+        }
+    }
+
     const handleModifications = async () => {
         try {
             setIsUpdating(true);
@@ -212,7 +242,7 @@ export default function Details({ params }: {
                                     )}
                                 </select>
                             </div>
-                            <Button className='!bg-red-400 gap-2'><Minus /><span>Retirer</span></Button>
+                            <Button className='!bg-red-400 gap-2' onClick={handleDelete}><Minus /><span>Retirer</span></Button>
                         </div>
                     </Card>
 
