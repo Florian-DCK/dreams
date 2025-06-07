@@ -96,6 +96,8 @@ export async function signIn(state: FormState, formData: FormData) {
 export async function signOut() {
     const cookieStore = await cookies()
     cookieStore.delete({ name: 'session', path: '/' })
-    revalidatePath("/")
-    redirect("/")
+    // Déclencher l'événement après la déconnexion
+    if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('auth-state-changed'));
+    }
 }

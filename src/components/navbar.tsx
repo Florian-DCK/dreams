@@ -35,6 +35,7 @@ interface Book {
 }
 
 export default function Navbar() {
+
 	const { setIsOpen } = useContext(NewLibraryModalContext);
 
 	const [session, setSession] = useState<Session>({
@@ -60,6 +61,19 @@ export default function Navbar() {
 				setIsLoading(false);
 			});
 	}, [pathname]);
+
+	const handleLogOut = async (e: React.FormEvent<HTMLFormElement>) => {
+		try {
+			await signOut();
+			setSession({ isAuth: false, username: '' });
+			setSearchQuery('');
+			setSearchResults([]);
+			setIsDropdownVisible(false);
+			window.location.href = '/';
+		} catch (error) {
+			console.error('Erreur lors de la déconnexion:', error);
+		}
+	};
 
 	const debouncedSearch = useRef(
 		debounce(async (query: string) => {
@@ -184,7 +198,7 @@ export default function Navbar() {
 										</DropdownMenuItem>
 										<DropdownMenuSeparator />
 										<DropdownMenuItem className=" rounded">
-											<form action={signOut} className="w-full">
+											<form action={handleLogOut} className="w-full">
 												<button
 													type="submit"
 													className="flex justify-between w-full">
