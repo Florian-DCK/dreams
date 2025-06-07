@@ -10,20 +10,23 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 import Button from '../button';
+import { Toggle } from '@/components/ui/toggle';
 
-function AddToLibraryModal({ isOpen, setIsOpen, bookId, note, review, customTitle}: {
+function AddToLibraryModal({ isOpen, setIsOpen, bookId, note, review, customTitle, isPublic = false }: {
     isOpen: boolean;
     setIsOpen: Dispatch<SetStateAction<boolean>>;
     bookId: string;
     note?: number;
     review?: string;
     customTitle?: string;
+    isPublic?: boolean;
 }) {
     const [libraries, setLibraries] = useState<any[]>([]);
     const [selectedLibrary, setSelectedLibrary] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [isLoadingLibraries, setIsLoadingLibraries] = useState(true);
+    const [isReviewPublic, setIsReviewPublic] = useState(isPublic);
 
     useEffect(() => {
         const fetchLibraries = async () => {
@@ -75,6 +78,7 @@ function AddToLibraryModal({ isOpen, setIsOpen, bookId, note, review, customTitl
                     note: note,
                     review: review,
                     customTitle: customTitle || null,
+                    isPublic: isReviewPublic
                 }),
             });
 
@@ -138,6 +142,14 @@ function AddToLibraryModal({ isOpen, setIsOpen, bookId, note, review, customTitl
                         </label>
                     )}
 
+                    <Toggle 
+                        pressed={isReviewPublic}
+                        onPressedChange={setIsReviewPublic}
+                        className="rounded-[8px] cursor-pointer"
+                    >
+                        {isReviewPublic ? "Votre critique sera visible" : "Votre critique ne sera pas visible"}
+                    </Toggle>
+
                     {libraries.length > 0 && (
                         <DialogFooter className="flex justify-between">
                             <Button
@@ -163,13 +175,15 @@ export default function useAddToLibraryModal() {
     const [note, setNote] = useState<number | undefined>(undefined);
     const [review, setReview] = useState<string | undefined>(undefined);
     const [customTitle, setCustomTitle] = useState<string>('');
+    const [isPublic, setIsPublic] = useState<boolean>(false);
 
-    const openModal = (id: string, noteValue?: number, reviewValue?: string, customTitleValue?: string) => {
+    const openModal = (id: string, noteValue?: number, reviewValue?: string, customTitleValue?: string, isPublicValue?: boolean) => {
         setBookId(id);
         setNote(noteValue);
         setReview(reviewValue);
         setIsOpen(true);
         setCustomTitle(customTitleValue || '');
+        setIsPublic(isPublicValue || false);
     };
 
     const AddToLibraryModalComponent = () => {
@@ -181,6 +195,7 @@ export default function useAddToLibraryModal() {
                 note={note}
                 review={review}
                 customTitle={customTitle}
+                isPublic={isPublic}
             />
         );
     };
@@ -188,6 +203,6 @@ export default function useAddToLibraryModal() {
     return {
         openModal,
         setIsOpen,
-        AddToLibraryModal: AddToLibraryModalComponent,
+        AddToLibraryModal: AddToLibraryModalComponent
     };
 }

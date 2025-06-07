@@ -5,7 +5,7 @@ import { CustomBookSchema } from "@/app/lib/definitions";
 
 export async function POST(request: Request) {
     try {
-        const { bookId, libraryId, note, review, customTitle } = await request.json();
+        const { bookId, libraryId, note, review, customTitle, isPublic } = await request.json();
         if (!bookId || !libraryId) {
             return new Response(
                 JSON.stringify({ error: "Missing bookId or libraryId" }),
@@ -104,8 +104,9 @@ export async function POST(request: Request) {
             }
         }
 
-        const query = "INSERT INTO LibraryBooks (library_id, book_id, note, review, custom_title) VALUES (?, ?, ?, ?, ?)";
-        await connection.query(query, [libraryId, bookId, note || null, review || null, customTitle || null]);
+        const query = "INSERT INTO LibraryBooks (library_id, book_id, note, review, custom_title, review_public) VALUES (?, ?, ?, ?, ?, ?)";
+        await connection.query(query, [libraryId, bookId, note || null, review || null, customTitle || null, isPublic === true ? 'Y' : 'N']);
+        console.log(isPublic)
         db.close();
 
         return new Response(
@@ -125,7 +126,7 @@ export async function POST(request: Request) {
 
 export async function PUT(request: Request) {
     try {
-        const { bookId, libraryId, note, review, customTitle } = await request.json();
+        const { bookId, libraryId, note, review, customTitle, isPublic } = await request.json();
         if (!bookId || !libraryId) {
             return new Response(
                 JSON.stringify({ error: "Missing bookId or libraryId" }),
@@ -163,10 +164,17 @@ export async function PUT(request: Request) {
         const connection = await db.getDB();
         const query = `
             UPDATE LibraryBooks 
-            SET note = ?, review = ?, custom_title = ? 
+            SET note = ?, review = ?, custom_title = ?, review_public = ? 
             WHERE book_id = ? AND library_id = ?
         `;
-        const queryResult = await connection.query(query, [note || null, review || null, customTitle || null, bookId, libraryId]);
+        const queryResult = await connection.query(query, [
+            note || null, 
+            review || null, 
+            customTitle || null, 
+            isPublic === true ? 'Y' : 'N', 
+            bookId, 
+            libraryId
+        ]);
         db.close();
         if (queryResult.affectedRows === 0) {
             return new Response(

@@ -3,15 +3,37 @@ import Review from "./review";
 
 export default function DetailsReviews({
     className = "",
+    usersReviews,
 }: {
     className?: string;
+    usersReviews?: any[];
 }) {
+    
     return (
         <Card className={`flex flex-col gap-4 ${className}`}>
-            <h1 className="text-2xl font-bold text-left">Reviews d'autres lecteurs :</h1>
-            <Review username="Flo5GK" note={4} review="J'ai aimé le livre même si il trainait en longueur sur la fin. Les personnages sont attachants et l'intrigue est bien menée, mais certains passages auraient pu être plus concis. Malgré tout, c'est une lecture que je recommande pour les amateurs du genre." ></Review>
-            <hr />
-            <Review username="Lili" note={5} review="Un chef-d'œuvre ! J'ai adoré chaque page. L'auteur a su créer un univers captivant et des rebondissements inattendus. J'ai été transportée du début à la fin, et je relirai ce livre avec plaisir. À ne pas manquer !" ></Review>
+            <h2 className=" text-xl font-bold ">Critiques de nos utilisateurs :</h2>
+            {usersReviews && (Array.isArray(usersReviews) ? (
+                usersReviews.length > 0 ? (
+                    usersReviews.map((review, index) => (
+                        <Review
+                            key={index}
+                            username={review.username}
+                            note={review.note}
+                            review={review.review}
+                            className="border-b border-gray-200 pb-4 last:border-b-0"
+                        />
+                        
+                    ))
+                ) : (
+                    <p className="text-gray-500">Aucun avis disponible pour ce livre.</p>
+                )
+            ) : (
+                <Review
+                    username={usersReviews.username}
+                    note={usersReviews.note}
+                    review={usersReviews.review}
+                />
+            ))}
         </Card>
     );
 }

@@ -8,6 +8,7 @@ import DetailsReviews from '@/components/details/detailsReviews';
 import Button from '@/components/button';
 import { Plus , PenLine} from 'lucide-react';
 import { AddToLibraryModalContext } from '@/components/modals/providers';
+import Stars from '@/components/stars';
 
 type PageProps = {
   params: {
@@ -23,11 +24,16 @@ export default function Details({ params }: PageProps) {
     const [error, setError] = useState<string | null>(null);
     const [rating, setRating] = useState<number>(0);
     const [review, setReview] = useState<string>("");
+	const [isPublic, setIsPublic] = useState<boolean>(false);
     const [editableTitle, setEditableTitle] = useState<string>("");
     const { openModal } = useContext(AddToLibraryModalContext);
 
+	const [usersReviews, setUsersReviews] = useState<any[]>([]);
+	const [medianeNote, setMedianeNote] = useState<number>(0);
+	const [nbNotes, setNbNotes] = useState<number>(0);
+
     const handleAddToLibrary = () => {
-        openModal(book.id, rating, review, editableTitle);
+        openModal(book.id, rating, review, editableTitle, isPublic);
     };
 
     useEffect(() => {
@@ -56,7 +62,30 @@ export default function Details({ params }: PageProps) {
                 setLoading(false);
             }
         };
+
+		const fetchUsersReviews = async () => {
+			try {
+				const response = await fetch(`/api/books/review?bookId=${id}`);
+				if (!response.ok) {
+					throw new Error('Erreur lors de la récupération des avis des utilisateurs');
+				}
+				const data = await response.json();
+				setUsersReviews(data);
+				
+				// Calcul de la moyenne des notes
+				if (data && data.length > 0) {
+					const sum = data.reduce((acc, review) => acc + review.note, 0);
+					const average = sum / data.length;
+					setMedianeNote(average);
+				}
+				setNbNotes(data.length);
+			} catch (error) {
+				console.error('Erreur lors de la récupération des avis des utilisateurs:', error);
+			}
+		}
+
         fetchBookDetails();
+		fetchUsersReviews();
     }, [id]);
 
     if (loading)
@@ -68,7 +97,7 @@ export default function Details({ params }: PageProps) {
 
     return (
         <div className="items-center justify-center mt-5">
-            <div className="w-[90%] mx-auto px-8 rounded flex flex-col md:flex-row gap-8 ">
+            <div className="w-[90%] mx-auto rounded flex flex-col md:flex-row gap-8 ">
                 <section className='flex-1 flex-col gap-4 space-y-5'>
                     <Card className="flex-1 flex flex-col gap-4">
 						<span className='flex items-center gap-3 w-full'>
@@ -103,9 +132,19 @@ export default function Details({ params }: PageProps) {
 				{/* Colonne droite : infos */}
 				<section className='flex-1 flex flex-col flex-start space-y-5'>
 					<Card className="self-start w-full">
-						<h2 className="text-2xl font-bold mb-4 ">
-							Informations du livre :
-						</h2>
+						<span className='flex justify-between'>
+							<h2 className="text-2xl font-bold mb-4 ">
+								Informations du livre :
+							</h2>
+								{nbNotes > 0 && (
+									<span className='flex items-center gap-2'>
+										<span className="text-sm text-right text-gray-500">
+											{nbNotes} {nbNotes > 1 ? 'notes' : 'note'}
+										</span>
+										<Stars note={medianeNote}></Stars>
+									</span>
+								)}
+						</span>
 						<div className=" space-y-2">
 							{book.published_date && (
 								<p>
@@ -169,12 +208,14 @@ export default function Details({ params }: PageProps) {
                         className="flex-1"
                         onReviewChange={setReview}
                         onRatingChange={setRating}
+						onPublicChange={setIsPublic}
+						IsPublic={isPublic}
                     />
 				</section>
 			</div>
 			{/* Section des notes et avis des utilisateurs en dessous de tout le reste */}
 			<section className="w-[90%] mx-auto mt-8 mb-10">
-				<DetailsReviews className="flex-1" />
+				<DetailsReviews className="flex-1" usersReviews={usersReviews} />
 			</section>
 		</div>
 	);

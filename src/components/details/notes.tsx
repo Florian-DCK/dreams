@@ -1,20 +1,23 @@
 import Card from "@/components/card";
 import Stars from "../stars";
 import { useState, useEffect } from "react";
-import { set } from "lodash";
+import { Toggle } from "@/components/ui/toggle"
 
 export default function Notes({ 
     className = "", 
     onReviewChange,
     onRatingChange,
     note = 0,
-    userReview = ""
+    userReview = "",
+    setIsPublic
 }: { 
     className?: string;
     onReviewChange?: (review: string) => void;
     onRatingChange?: (rating: number) => void;
+    setIsPublic?: (isPublic: boolean) => void;
     note?: number;
     userReview?: string;
+    isPublic?: boolean;
 }) {
     const [review, setReview] = useState("");
 
@@ -27,6 +30,12 @@ export default function Notes({
         setReview(newReview);
         if (onReviewChange) {
             onReviewChange(newReview);
+        }
+    };
+
+    const handlePublicChange = (pressed: boolean) => {
+        if (setIsPublic) {
+            setIsPublic(pressed);
         }
     };
 
