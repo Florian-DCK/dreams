@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { checkBookExists } from '@/app/utils/bookCrud';
 
 
 /**
@@ -43,11 +44,33 @@ export async function GET(request: Request) {
             }
         })) || [];
 
-        console.log('Items fetched:', items);
+        for (const item of items) {
+            if (await checkBookExists(item.id)) {
+                // console.log(`Le livre avec l'ID ${item.id} existe déjà dans la base de données.`);
+                const reviews = fetch(process.env.NEXT_PUBLIC_API_URL + `/api/books/review?bookId=${item.id}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(res => res.json())
+                .catch(err => {
+                    console.error(`Erreur lors de la récupération des critiques pour le livre ${item.id}:`, err);
+                    return [];
+                });
+                const data = await reviews;
+                if (data && data.length > 0) {
+                    const sum = data.reduce((acc, review) => acc + review.note, 0);
+                    const average = sum / data.length;
+                    item.reviews = average;
+                    item.nbReviews = data.length;
+                }
+            }
+        }
 
         return NextResponse.json({ data: items }, { status: 200 });
     } catch (error) {
         console.error(error);
-        return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+        return NextResponse.json({ error: 'Erreur serveur', debug: error }, { status: 500 });
     }
 }

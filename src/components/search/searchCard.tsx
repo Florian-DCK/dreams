@@ -44,10 +44,6 @@ export default function SearchCard({ book }: { book: any }) {
 				</div>
 			</div>
 			<div className="flex mt-auto pt-5 items-center justify-between">
-				<Stars
-					note={book.volumeInfo.averageRating || random(0, 5)}
-					editable={false}
-				/>
 				<span className="flex items-center space-x-2">
 					<Button
 						onClick={() => router.push(`/details/${book.id}`)}
@@ -60,6 +56,17 @@ export default function SearchCard({ book }: { book: any }) {
 						<span className='hidden lg:block'>Ajouter</span>
 					</Button>
 				</span>
+				{ book.nbReviews && book.nbReviews > 0 && (
+					<div className="flex items-center space-x-2">
+					<span className="text-white opacity-60">
+						{book.nbReviews} {book.nbReviews > 1 ? 'avis' : 'avis'}
+					</span>
+					<Stars
+						note={book.reviews}
+						editable={false}
+						/>
+					</div>
+				)}
 			</div>
 		</div>
 	);
