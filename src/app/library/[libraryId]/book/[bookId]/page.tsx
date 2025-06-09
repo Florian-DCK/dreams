@@ -8,6 +8,7 @@ import DetailsReviews from '@/components/details/detailsReviews';
 import Button from '@/components/button';
 import { PenLine, Minus, Library, NotebookTabs } from 'lucide-react';
 import { AddToLibraryModalContext } from '@/components/modals/providers';
+import ArtCanvas from '@/components/canvas';
 
 type PageProps = {
 	params: {
@@ -357,10 +358,7 @@ export default function Details({
 				</section>
 			</div>
 			<div className="h-screen w-[90%] items-center justify-center mx-auto ">
-				<Card className="mt-8 p-6 h-full">
-					<h2 className="text-2xl font-bold mb-4">Canvas</h2>
-					<p>Cette section est réservée à la création artistique.</p>
-				</Card>
+				<ArtCanvas className="h-full w-full my-15"/>
 			</div>
 		</div>
 	);
