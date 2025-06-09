@@ -31,7 +31,7 @@ export default function SignInUpForm({
 	return (
 		<section className="forms-section">
 			<div className="forms">
-				<div className="form-wrapper is-active w-96">
+				<div className="form-wrapper is-active w-full lg:w-96">
 					<button type="button" className="switcher switcher-login">
 						Connexion
 						<span className="underline"></span>
@@ -63,7 +63,7 @@ export default function SignInUpForm({
 						</Button>
 					</form>
 				</div>
-				<div className="form-wrapper w-96">
+				<div className="form-wrapper w-full lg:w-96">
 					<button type="button" className="switcher switcher-signup">
 						Inscription
 						<span className="underline"></span>
