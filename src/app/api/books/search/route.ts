@@ -43,6 +43,8 @@ export async function GET(request: Request) {
             }
         })) || [];
 
+        console.log('Items fetched:', items);
+
         return NextResponse.json({ data: items }, { status: 200 });
     } catch (error) {
         console.error(error);

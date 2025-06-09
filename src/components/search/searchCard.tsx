@@ -16,11 +16,11 @@ export default function SearchCard({ book }: { book: any }) {
 	}
 
 	return (
-		<div className="bg-primary rounded-2xl p-4 shadow-sm">
-			<h2 className="text-xl font-semibold text-white">
+		<div className="bg-primary rounded-2xl p-4 shadow-sm flex flex-col h-full">
+			<h2 className="text-xl font-semibold text-white mb-2">
 				{book.volumeInfo.title}
 			</h2>
-			<div className="flex">
+			<div className="flex flex-grow">
 				{book.volumeInfo.imageLinks?.thumbnail && (
 					<img
 						src={book.volumeInfo.imageLinks.thumbnail}
@@ -43,7 +43,7 @@ export default function SearchCard({ book }: { book: any }) {
 					</p>
 				</div>
 			</div>
-			<div className="flex mt-5 items-center justify-between">
+			<div className="flex mt-auto pt-5 items-center justify-between">
 				<Stars
 					note={book.volumeInfo.averageRating || random(0, 5)}
 					editable={false}
@@ -51,13 +51,13 @@ export default function SearchCard({ book }: { book: any }) {
 				<span className="flex items-center space-x-2">
 					<Button
 						onClick={() => router.push(`/details/${book.id}`)}
-						className="space-x-2">
+						className="lg:space-x-2">
 						<NotebookTabs />
-						<span>Voir les détails</span>
+						<span className='hidden lg:block'>Voir les détails</span>
 					</Button>
-					<Button className=" space-x-2" onClick={handleAddToLibrary}>
+					<Button className="lg:space-x-2" onClick={handleAddToLibrary}>
 						<Plus />
-						<span>Ajouter</span>
+						<span className='hidden lg:block'>Ajouter</span>
 					</Button>
 				</span>
 			</div>

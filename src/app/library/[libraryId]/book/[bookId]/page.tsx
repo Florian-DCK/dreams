@@ -277,13 +277,13 @@ export default function Details({
 									)}
 								</select>
 							</div>
-							<Button className="!bg-red-400 gap-2" onClick={handleDelete}>
+							<Button className="!bg-red-400 lg:gap-2" onClick={handleDelete}>
 								<Minus />
-								<span>Retirer</span>
+								<span className='hidden lg:block'>Retirer</span>
 							</Button>
-							<Button className='gap-2' onClick={() => router.push(`/details/${book.details.id}`)}>
+							<Button className='lg:gap-2' onClick={() => router.push(`/details/${book.details.id}`)}>
                                 <NotebookTabs />
-								Accéder aux détails
+								<span className='hidden lg:block'>Accéder aux détails</span>
 							</Button>
 						</div>
 					</Card>
