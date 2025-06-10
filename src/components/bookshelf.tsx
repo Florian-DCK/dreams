@@ -45,7 +45,7 @@ export default function Bookshelf({
 				</nav>
 
 				<section className="p-6 space-y-4">
-					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+					<div className="flex flex-wrap justify-center gap-4 sm:gap-6">
 						{children}
 					</div>
 					{!children || (Array.isArray(children) && children.length === 0) ? (

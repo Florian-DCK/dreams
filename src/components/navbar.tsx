@@ -36,7 +36,6 @@ interface Book {
 }
 
 export default function Navbar() {
-
 	const { setIsOpen } = useContext(NewLibraryModalContext);
 
 	const [session, setSession] = useState<Session>({
@@ -61,7 +60,7 @@ export default function Navbar() {
 				console.error('Erreur:', err);
 				setIsLoading(false);
 			});
-			
+
 		// Réinitialiser la visibilité de la barre de recherche sur les changements de page
 		setIsSearchVisible(false);
 	}, [pathname]);
@@ -123,7 +122,7 @@ export default function Navbar() {
 			setIsDropdownVisible(true);
 		}
 	};
-	
+
 	const handleResultClick = () => {
 		setIsDropdownVisible(false);
 		setIsSearchVisible(false);
@@ -131,7 +130,7 @@ export default function Navbar() {
 
 	return (
 		<div className="flex justify-between items-center p-4 bg-transparent shadow-[0_10px_10px_-10px_rgba(0,0,0,0.1)]">
-			<Link href="/" className='hidden md:block' >
+			<Link href="/" className="hidden md:block">
 				<LogoInline className="w-35 h-fit text-primary" />
 			</Link>
 			<Link href="/" className="block md:hidden">
@@ -139,117 +138,117 @@ export default function Navbar() {
 			</Link>
 
 			{/* Bouton de recherche visible uniquement en mode mobile */}
-			<button 
-				onClick={() => setIsSearchVisible(!isSearchVisible)}
-				className="md:hidden flex items-center ml-3 mr-auto p-2 text-primary"
-			>
-				<Search size={24} />
-			</button>
+			{session.isAuth && (
+				<button
+					onClick={() => setIsSearchVisible(!isSearchVisible)}
+					className="md:hidden flex items-center ml-3 mr-auto p-2 text-primary">
+					<Search size={24} />
+				</button>
+			)}
 
 			{/* Barre de recherche */}
-			<div 
-				className={`relative transition-all duration-300 ease-in-out ${
-					!isSearchVisible 
-						? 'hidden sm:hidden md:block' 
-						: 'absolute top-0 left-0 right-0 z-50 px-4 md:static md:px-0 animate-[fadeIn_0.3s_ease-in-out_forwards]'
-				}`} 
-				ref={searchRef}
-			>
-				<form action="/search" method="get">
-					<input
-						type="text"
-						id="search"
-						name="q"
-						value={searchQuery}
-						onChange={handleSearchChange}
-						onFocus={handleFocus}
-						className="p-2 bg-primary rounded-full outline-none focus:border-gray-500 transition duration-200 text-foreground w-full md:w-96"
-						placeholder="Rechercher..."
-						autoComplete="off"
-					/>				</form>
-				{isDropdownVisible && searchResults.length > 0 && (
-					<div className={`absolute mt-1 bg-white rounded-md shadow-lg z-50 max-h-[80vh] overflow-y-auto ${
-						isSearchVisible 
-							? 'transform -translate-x-1/2 left-1/2 right-0 w-[200%] md:w-1/2' 
-							: 'transform -translate-x-1/2 left-1/2 right-0 w-[300%] md:w-[300%]'
-					}`}>
-						{[...searchResults].map((result, index) => (
-							<div key={index} className="">								<a
-									key={index}
-									href={`/details/${result.id}`}
-									onClick={handleResultClick}
-									className="p-2 bg-popover hover:bg-primary flex">
-									{result.volumeInfo.imageLinks &&
-										result.volumeInfo.imageLinks.thumbnail && (
-											<img
-												src={result.volumeInfo.imageLinks.thumbnail}
-												alt={result.volumeInfo.title}
-												className="w-16 h-24 object-cover mr-2"
-											/>
-									)}									<div className="flex flex-col gap-1 overflow-hidden">
-										<span className="font-medium truncate">{result.volumeInfo.title}</span>
-										{result.volumeInfo.authors &&
-											result.volumeInfo.authors.length > 0 && (
-												<span className="text-sm text-gray-200 truncate">
-													{result.volumeInfo.authors.join(', ')}
-												</span>
-										)}
-									</div>
-
-								</a>
-								<hr className="border-gray-700" />
-							</div>
-						))}
-					</div>
-				)}
-			</div>
-			<nav className="flex space-x-4">
-				{!isLoading && (
-					<>
-						{session.isAuth && (
-							<div className="flex items-center gap-3">
-								<a
-									href="/profile"
-									className="hover:text-light text-lg font-bold text-primary">
-									{session.username}
-								</a>
-								<DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Menu color='#415a77' size={30} />
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent className=" w-56 rounded">
-										<DropdownMenuItem className=" rounded flex justify-between">
-											<span>Mon compte</span>
-											<User />
-										</DropdownMenuItem>
-										<DropdownMenuSeparator />										<DropdownMenuItem className=" rounded">
-											<button
-												onClick={handleLogOut}
-												className="flex justify-between w-full">
-												<span>Se déconnecter</span>
-												<LogOut
-													className="cursor-pointer"
-													color="background"
-													size={16}
+			{session.isAuth && (
+				<div
+					className={`relative transition-all duration-300 ease-in-out ${
+						!isSearchVisible
+							? 'hidden sm:hidden md:block'
+							: 'absolute top-0 left-0 right-0 z-50 px-4 md:static md:px-0 animate-[fadeIn_0.3s_ease-in-out_forwards]'
+					}`}
+					ref={searchRef}>
+					<form action="/search" method="get">
+						<input
+							type="text"
+							id="search"
+							name="q"
+							value={searchQuery}
+							onChange={handleSearchChange}
+							onFocus={handleFocus}
+							className="p-2 bg-primary rounded-full outline-none focus:border-gray-500 transition duration-200 text-foreground w-full md:w-96"
+							placeholder="Rechercher..."
+							autoComplete="off"
+						/>{' '}
+					</form>
+					{isDropdownVisible && searchResults.length > 0 && (
+						<div
+							className={`absolute mt-1 bg-white rounded-md shadow-lg z-50 max-h-[80vh] overflow-y-auto ${
+								isSearchVisible
+									? 'transform -translate-x-1/2 left-1/2 right-0 w-[200%] md:w-1/2'
+									: 'transform -translate-x-1/2 left-1/2 right-0 w-[300%] md:w-[300%]'
+							}`}>
+							{[...searchResults].map((result, index) => (
+								<div key={index} className="">
+									{' '}
+									<a
+										key={index}
+										href={`/details/${result.id}`}
+										onClick={handleResultClick}
+										className="p-2 bg-popover hover:bg-primary flex">
+										{result.volumeInfo.imageLinks &&
+											result.volumeInfo.imageLinks.thumbnail && (
+												<img
+													src={result.volumeInfo.imageLinks.thumbnail}
+													alt={result.volumeInfo.title}
+													className="w-16 h-24 object-cover mr-2"
 												/>
-											</button>
-										</DropdownMenuItem>
-										<DropdownMenuSeparator />
-										<DropdownMenuItem className="rounded">
-											<button onClick={() => setIsOpen(true)}>
-												Nouvelle bibliothèque
-											</button>
-										</DropdownMenuItem>
-									</DropdownMenuContent>
-								</DropdownMenu>
-							</div>
-						)}
-						{!session.isAuth && (
-							<a href="/login" className="hover:text-gray-400">
-								Connexion
-							</a>
-						)}
-					</>
+											)}{' '}
+										<div className="flex flex-col gap-1 overflow-hidden">
+											<span className="font-medium truncate">
+												{result.volumeInfo.title}
+											</span>
+											{result.volumeInfo.authors &&
+												result.volumeInfo.authors.length > 0 && (
+													<span className="text-sm text-gray-200 truncate">
+														{result.volumeInfo.authors.join(', ')}
+													</span>
+												)}
+										</div>
+									</a>
+									<hr className="border-gray-700" />
+								</div>
+							))}
+						</div>
+					)}
+				</div>
+			)}
+			<nav className="flex space-x-4">
+				{!isLoading && session.isAuth && (
+					<div className="flex items-center gap-3">
+						<a
+							href="/profile"
+							className="hover:text-light text-lg font-bold text-primary">
+							{session.username}
+						</a>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Menu color="#415a77" size={30} />
+							</DropdownMenuTrigger>
+							<DropdownMenuContent className=" w-56 rounded">
+								<DropdownMenuItem className=" rounded flex justify-between">
+									<span>Mon compte</span>
+									<User />
+								</DropdownMenuItem>
+								<DropdownMenuSeparator />{' '}
+								<DropdownMenuItem className=" rounded">
+									<button
+										onClick={handleLogOut}
+										className="flex justify-between w-full">
+										<span>Se déconnecter</span>
+										<LogOut
+											className="cursor-pointer"
+											color="background"
+											size={16}
+										/>
+									</button>
+								</DropdownMenuItem>
+								<DropdownMenuSeparator />
+								<DropdownMenuItem className="rounded">
+									<button onClick={() => setIsOpen(true)}>
+										Nouvelle bibliothèque
+									</button>
+								</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
+					</div>
 				)}
 			</nav>
 		</div>
