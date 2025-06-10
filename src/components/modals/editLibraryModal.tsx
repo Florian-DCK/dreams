@@ -1,5 +1,11 @@
 'use client';
-import { SetStateAction, useState, Dispatch, FormEvent } from 'react';
+import {
+	SetStateAction,
+	useState,
+	Dispatch,
+	FormEvent,
+	useEffect,
+} from 'react';
 import {
 	Dialog,
 	DialogClose,
@@ -10,69 +16,64 @@ import {
 	DialogTitle,
 } from '@/components/ui/dialog';
 import Button from '../button';
-import { BookOpen, Palette, FileText, Plus } from 'lucide-react';
+import { Edit, Palette, FileText, BookOpen, Save } from 'lucide-react';
 
-function NewLibraryModal({
+interface Library {
+	id: string;
+	title: string;
+	description: string;
+	couleur: string;
+}
+
+function EditLibraryModal({
 	isOpen,
 	setIsOpen,
+	library,
 }: {
 	isOpen: boolean;
 	setIsOpen: Dispatch<SetStateAction<boolean>>;
+	library: Library | null;
 }) {
-	const [name, setName] = useState('');
+	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
-	const [color, setColor] = useState('#ffffff');
+	const [couleur, setCouleur] = useState('#ffffff');
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState('');
 
+	useEffect(() => {
+		if (library) {
+			setTitle(library.title);
+			setDescription(library.description);
+			setCouleur(library.couleur);
+		}
+	}, [library]);
+
 	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		if (!library) return;
+
 		setIsLoading(true);
 		setError('');
 
-		const userResponse = await fetch('/api/auth/session');
-		if (!userResponse.ok) {
-			setError('Utilisateur non authentifié');
-			setIsLoading(false);
-			return;
-		}
-
-		const userData = await userResponse.json();
-		if (!userData.isAuth) {
-			setError('Utilisateur non authentifié');
-			setIsLoading(false);
-			return;
-		}
-		if (!userData.userId) {
-			setError('Identifiant utilisateur manquant');
-			setIsLoading(false);
-			return;
-		}
-
 		try {
-			const response = await fetch('/api/library/new', {
-				method: 'POST',
+			const response = await fetch(`/api/library/${library.id}`, {
+				method: 'PUT',
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify([userData.userId, name, description, color]),
+				body: JSON.stringify({ title, description, couleur }),
 			});
 
 			const data = await response.json();
 
 			if (!response.ok) {
 				throw new Error(
-					data.error || 'Erreur lors de la création de la bibliothèque'
+					data.error || 'Erreur lors de la modification de la bibliothèque'
 				);
 			}
 
 			setIsOpen(false);
-			setName('');
-			setDescription('');
-			setColor('#ffffff');
-
-			// Au lieu de rediriger, déclencher un événement pour rafraîchir les bibliothèques
-			window.dispatchEvent(new CustomEvent('library-created'));
+			window.dispatchEvent(new CustomEvent('library-updated'));
 		} catch (err) {
 			setError(err instanceof Error ? err.message : 'Une erreur est survenue');
 		} finally {
@@ -84,13 +85,13 @@ function NewLibraryModal({
 			<DialogContent className="sm:max-w-lg bg-card border-border/20 rounded-2xl shadow-2xl">
 				<DialogHeader className="space-y-4 pb-6">
 					<div className="flex items-center justify-center w-16 h-16 mx-auto bg-primary/10 rounded-2xl">
-						<BookOpen className="w-8 h-8 text-primary" />
+						<Edit className="w-8 h-8 text-primary" />
 					</div>
 					<DialogTitle className="text-center text-2xl font-bold text-foreground">
-						Créer une nouvelle bibliothèque
+						Modifier la bibliothèque
 					</DialogTitle>
 					<DialogDescription className="text-center text-muted-foreground max-w-sm mx-auto">
-						Organisez vos livres dans une nouvelle bibliothèque personnalisée
+						Personnalisez les informations de votre bibliothèque
 					</DialogDescription>
 				</DialogHeader>
 
@@ -114,8 +115,8 @@ function NewLibraryModal({
 								placeholder="Ex: Romans de science-fiction"
 								required
 								maxLength={30}
-								value={name}
-								onChange={(e) => setName(e.target.value)}
+								value={title}
+								onChange={(e) => setTitle(e.target.value)}
 							/>
 						</div>
 						
@@ -142,8 +143,8 @@ function NewLibraryModal({
 								<input
 									type="color"
 									className="w-12 h-12 border-2 border-border rounded-xl cursor-pointer"
-									value={color}
-									onChange={(e) => setColor(e.target.value)}
+									value={couleur}
+									onChange={(e) => setCouleur(e.target.value)}
 								/>
 								<div className="flex-1">
 									<div className="text-sm text-muted-foreground">
@@ -170,12 +171,12 @@ function NewLibraryModal({
 							{isLoading ? (
 								<div className="flex items-center gap-2">
 									<div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-									Création...
+									Modification...
 								</div>
 							) : (
 								<div className="flex items-center gap-2">
-									<Plus className="w-4 h-4" />
-									Créer
+									<Save className="w-4 h-4" />
+									Modifier
 								</div>
 							)}
 						</Button>
@@ -186,14 +187,28 @@ function NewLibraryModal({
 	);
 }
 
-export default function useNewLibraryModal() {
+export default function useEditLibraryModal() {
 	const [isOpen, setIsOpen] = useState(false);
+	const [library, setLibrary] = useState<Library | null>(null);
 
-	const NewModalComponent = () => {
-		return <NewLibraryModal isOpen={isOpen} setIsOpen={setIsOpen} />;
+	const openModal = (libraryToEdit: Library) => {
+		setLibrary(libraryToEdit);
+		setIsOpen(true);
 	};
+
+	const EditModalComponent = () => {
+		return (
+			<EditLibraryModal
+				isOpen={isOpen}
+				setIsOpen={setIsOpen}
+				library={library}
+			/>
+		);
+	};
+
 	return {
+		openModal,
 		setIsOpen,
-		NewLibraryModal: NewModalComponent,
+		EditLibraryModal: EditModalComponent,
 	};
 }

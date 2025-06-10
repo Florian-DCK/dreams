@@ -2,6 +2,7 @@
 import { createContext } from 'react';
 import useNewLibraryModal from './newLibraryModal';
 import useAddToLibraryModal from './addToLibraryModal';
+import useEditLibraryModal from './editLibraryModal';
 import { Dispatch, SetStateAction } from 'react';
 
 export const NewLibraryModalContext = createContext<{
@@ -18,6 +19,14 @@ export const AddToLibraryModalContext = createContext<{
 	setIsOpen: () => {},
 });
 
+export const EditLibraryModalContext = createContext<{
+	openModal: (library: { id: string; title: string; description: string; couleur: string }) => void;
+	setIsOpen: Dispatch<SetStateAction<boolean>>;
+}>({
+	openModal: () => {},
+	setIsOpen: () => {},
+});
+
 export default function ModalProviders({
 	children,
 }: {
@@ -25,13 +34,17 @@ export default function ModalProviders({
 }) {
 	const { setIsOpen: setNewLibraryIsOpen, NewLibraryModal } = useNewLibraryModal();
 	const { openModal: openAddToLibraryModal, setIsOpen: setAddToLibraryIsOpen, AddToLibraryModal } = useAddToLibraryModal();
+	const { openModal: openEditLibraryModal, setIsOpen: setEditLibraryIsOpen, EditLibraryModal } = useEditLibraryModal();
 
 	return (
 		<NewLibraryModalContext.Provider value={{ setIsOpen: setNewLibraryIsOpen }}>
 			<AddToLibraryModalContext.Provider value={{ openModal: openAddToLibraryModal, setIsOpen: setAddToLibraryIsOpen }}>
-				<NewLibraryModal />
-				<AddToLibraryModal />
-				{children}
+				<EditLibraryModalContext.Provider value={{ openModal: openEditLibraryModal, setIsOpen: setEditLibraryIsOpen }}>
+					<NewLibraryModal />
+					<AddToLibraryModal />
+					<EditLibraryModal />
+					{children}
+				</EditLibraryModalContext.Provider>
 			</AddToLibraryModalContext.Provider>
 		</NewLibraryModalContext.Provider>
 	);
