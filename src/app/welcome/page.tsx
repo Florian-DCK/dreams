@@ -12,6 +12,7 @@ import {
 	Sparkles,
 	ArrowRight,
 	CheckCircle,
+	BookMarked,
 } from 'lucide-react';
 
 export default function Welcome() {
@@ -130,13 +131,7 @@ export default function Welcome() {
 								</div>
 							</div>
 						</div>
-						<div className="flex-shrink-0">
-							<img
-								src="library.jpg"
-								className="w-80 h-80 object-cover rounded-2xl shadow-2xl hover:scale-105 transition-transform duration-500 animate-fade-in animation-delay-700"
-								alt="Bibliothèque Dreams"
-							/>
-						</div>
+						<div className="flex-shrink-0"></div>
 					</div>
 				</Card>
 
