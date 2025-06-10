@@ -16,7 +16,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
 	title: 'Dreams',
-	description: 'Mon carnet de lecture',
+	description:
+		'Une application pour gérer votre bibliothèque de livres, vos lectures et vos critiques.',
 };
 
 export default function RootLayout({
@@ -25,7 +26,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en">
+		<html lang="fr">
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
 				<ModalProviders>
