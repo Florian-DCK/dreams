@@ -38,11 +38,11 @@ export default function Welcome() {
 					</p>
 					<Button
 						onClick={() => router.push('/login')}
-						className="bg-gradient-to-r from-primary to-purple-600 text-white hover:from-primary/90 hover:to-purple-700 px-8 py-4 text-lg gap-3 animate-slide-up animation-delay-400 hover:scale-105 transition-all duration-300">
-						Commencer l'aventure
+						className="bg-gradient-to-r from-purple-400 to-purple-600 text-white hover:from-purple-400/90 hover:to-purple-700 px-8 py-4 text-lg gap-3 animate-slide-up animation-delay-400 hover:scale-105 transition-all duration-300 items-center">
+						Découvrir Dreams
 						<ArrowRight
 							size={20}
-							className="transition-transform group-hover:translate-x-1"
+							className="transition-transform group-hover:translate-x-1 "
 						/>
 					</Button>
 				</div>
@@ -175,7 +175,7 @@ export default function Welcome() {
 					<div className="flex flex-col sm:flex-row gap-4 justify-center">
 						<Button
 							onClick={() => router.push('/login')}
-							className="bg-gradient-to-r from-primary to-purple-600 text-white hover:from-primary/90 hover:to-purple-700 px-8 py-4 text-lg gap-3 group hover:scale-105 transition-all duration-300">
+							className="bg-gradient-to-r from-purple-400 to-purple-600 text-white hover:from-purple-400/90 hover:to-purple-700 px-8 py-4 text-lg gap-3 group hover:scale-105 transition-all duration-300 items-center">
 							S'inscrire gratuitement
 							<ArrowRight
 								size={20}

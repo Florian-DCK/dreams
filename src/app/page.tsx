@@ -149,84 +149,6 @@ export default function Home() {
 					</div>
 				</Card>
 			)}
-
-			{/* Mes bibliothèques */}
-			<Card className="p-6">
-				<div className="flex items-center justify-between mb-6">
-					<div className="flex items-center">
-						<BookOpen className="text-primary mr-3" size={24} />
-						<h2 className="text-2xl font-bold">Mes bibliothèques</h2>
-					</div>
-					<Button
-						onClick={() => setIsOpen(true)}
-						className="bg-primary text-background hover:bg-primary/90 gap-2">
-						<Plus size={16} />
-						Nouvelle bibliothèque
-					</Button>
-				</div>
-
-				{libraries.length === 0 ? (
-					<div className="text-center py-12">
-						<BookOpen
-							className="mx-auto text-muted-foreground mb-4"
-							size={64}
-						/>
-						<h3 className="text-xl font-semibold mb-2">
-							Aucune bibliothèque créée
-						</h3>
-						<p className="text-muted-foreground mb-6">
-							Commencez votre aventure littéraire en créant votre première
-							bibliothèque
-						</p>
-						<Button
-							onClick={() => setIsOpen(true)}
-							className="bg-primary text-background hover:bg-primary/90 gap-2">
-							<Plus size={16} />
-							Créer ma première bibliothèque
-						</Button>
-					</div>
-				) : (
-					<div className="space-y-6">
-						{libraries.slice(0, 3).map((library, index) => (
-							<div key={index}>
-								<Bookshelf library={library} className="mb-4">
-									{library.books
-										.slice(0, 6)
-										.map((book: any, bookIndex: number) => (
-											<Book
-												key={bookIndex}
-												backgroundImage={book.details.cover_image}
-												url={`/library/${library.id}/book/${book.book_id}`}
-											/>
-										))}
-								</Bookshelf>
-								{library.books.length > 6 && (
-									<div className="text-center mt-2">
-										<Button
-											onClick={() => router.push(`/library/${library.id}`)}
-											className="gap-2 text-sm bg-transparent border hover:bg-card/50">
-											Voir tous les livres ({library.books.length})
-											<ArrowRight size={14} />
-										</Button>
-									</div>
-								)}
-							</div>
-						))}
-
-						{libraries.length > 3 && (
-							<div className="text-center">
-								<Button
-									onClick={() => router.push('/profile')}
-									className="gap-2">
-									Voir toutes mes bibliothèques
-									<ArrowRight size={16} />
-								</Button>
-							</div>
-						)}
-					</div>
-				)}
-			</Card>
-
 			{/* Derniers avis */}
 			{recentReviews.length > 0 && (
 				<Card className="p-6">
@@ -239,7 +161,7 @@ export default function Home() {
 						</div>
 						<Button
 							onClick={() => router.push('/profile')}
-							className="gap-2 bg-transparent border hover:bg-card/50">
+							className="gap-2 bg-transparent border hover:bg-card/50 items-center">
 							Voir tous mes avis
 							<ArrowRight size={16} />
 						</Button>
@@ -291,6 +213,82 @@ export default function Home() {
 					</div>
 				</Card>
 			)}
+			{/* Mes bibliothèques */}
+			<Card className="p-6">
+				<div className="flex items-center justify-between mb-6">
+					<div className="flex items-center">
+						<BookOpen className="text-primary mr-3" size={24} />
+						<h2 className="text-2xl font-bold">Mes bibliothèques</h2>
+					</div>
+					<Button
+						onClick={() => setIsOpen(true)}
+						className="bg-primary text-background hover:bg-primary/90 gap-2 items-center">
+						<Plus size={16} />
+						Nouvelle bibliothèque
+					</Button>
+				</div>
+
+				{libraries.length === 0 ? (
+					<div className="text-center py-12">
+						<BookOpen
+							className="mx-auto text-muted-foreground mb-4"
+							size={64}
+						/>
+						<h3 className="text-xl font-semibold mb-2">
+							Aucune bibliothèque créée
+						</h3>
+						<p className="text-muted-foreground mb-6">
+							Commencez votre aventure littéraire en créant votre première
+							bibliothèque
+						</p>
+						<Button
+							onClick={() => setIsOpen(true)}
+							className="bg-primary text-background hover:bg-primary/90 gap-2 items-center">
+							<Plus size={16} />
+							Créer ma première bibliothèque
+						</Button>
+					</div>
+				) : (
+					<div className="space-y-6">
+						{libraries.slice(0, 3).map((library, index) => (
+							<div key={index}>
+								<Bookshelf library={library} className="mb-4">
+									{library.books
+										.slice(0, 6)
+										.map((book: any, bookIndex: number) => (
+											<Book
+												key={bookIndex}
+												backgroundImage={book.details.cover_image}
+												url={`/library/${library.id}/book/${book.book_id}`}
+											/>
+										))}
+								</Bookshelf>
+								{library.books.length > 6 && (
+									<div className="text-center mt-2">
+										<Button
+											onClick={() => router.push(`/library/${library.id}`)}
+											className="gap-2 text-sm bg-transparent border hover:bg-card/50 items-center">
+											Voir tous les livres ({library.books.length})
+											<ArrowRight size={14} />
+										</Button>
+									</div>
+								)}
+							</div>
+						))}
+
+						{libraries.length > 3 && (
+							<div className="text-center">
+								<Button
+									onClick={() => router.push('/profile')}
+									className="gap-2 items-center">
+									Voir toutes mes bibliothèques
+									<ArrowRight size={16} />
+								</Button>
+							</div>
+						)}
+					</div>
+				)}
+			</Card>
 
 			{/* Actions rapides */}
 			<Card className="p-6">
