@@ -3,7 +3,8 @@ import { verifySession } from '@/app/lib/dal';
 
 export async function POST(request: Request) {
 	try {
-		const [user_id, library_name, library_description, library_color] = await request.json();
+		const [user_id, library_name, library_description, library_color] =
+			await request.json();
 		if (!user_id || !library_name) {
 			return new Response(
 				JSON.stringify({ error: 'Missing user_id or library_name' }),
@@ -26,12 +27,15 @@ export async function POST(request: Request) {
 				}
 			);
 		}
-
-		const db = new Database();
-		const connection = await db.getDB();
-		const query = 'INSERT INTO Library (user_id, name, description, color) VALUES (?, ?, ?, ?)';
-		const [result] = await connection.query(query, [user_id, library_name, library_description, library_color]);
-		db.close();
+		const db = Database.getInstance();
+		const query =
+			'INSERT INTO Library (user_id, name, description, color) VALUES (?, ?, ?, ?)';
+		const result = await db.query(query, [
+			user_id,
+			library_name,
+			library_description,
+			library_color,
+		]);
 		return new Response(
 			JSON.stringify({ message: 'Library created successfully' }),
 			{
@@ -40,9 +44,12 @@ export async function POST(request: Request) {
 			}
 		);
 	} catch (error) {
-		return new Response(JSON.stringify({ error: 'Invalid request body', debug: error }), {
-			status: 400,
-			headers: { 'Content-Type': 'application/json' },
-		});
+		return new Response(
+			JSON.stringify({ error: 'Invalid request body', debug: error }),
+			{
+				status: 400,
+				headers: { 'Content-Type': 'application/json' },
+			}
+		);
 	}
 }

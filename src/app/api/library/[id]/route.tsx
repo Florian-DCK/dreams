@@ -8,11 +8,10 @@ export async function DELETE(
 	try {
 		const session = await verifySession();
 		const LibraryId = params.id;
-		const db = new Database();
-		const connection = await db.getDB();
+		const db = Database.getInstance();
 
 		const query = 'DELETE FROM Library WHERE id = ? AND user_id = ?';
-		await connection.query(query, [LibraryId, session.userId]);
+		await db.query(query, [LibraryId, session.userId]);
 
 		return new Response(
 			JSON.stringify({ message: 'Library deleted successfully' }),
@@ -40,13 +39,11 @@ export async function PUT(
 		const session = await verifySession();
 		const LibraryId = params.id;
 		const { title, description, couleur } = await request.json();
-
-		const db = new Database();
-		const connection = await db.getDB();
+		const db = Database.getInstance();
 
 		const query =
 			'UPDATE Library SET name = ?, description = ?, color = ? WHERE id = ? AND user_id = ?';
-		await connection.query(query, [
+		await db.query(query, [
 			title,
 			description,
 			couleur,

@@ -6,7 +6,19 @@ import Card from '@/components/card';
 import Notes from '@/components/details/notes';
 import DetailsReviews from '@/components/details/detailsReviews';
 import Button from '@/components/button';
-import { PenLine, Minus, Library, NotebookTabs } from 'lucide-react';
+import {
+	PenLine,
+	Minus,
+	Library,
+	NotebookTabs,
+	BookOpen,
+	Calendar,
+	Users,
+	Building2,
+	Globe2,
+	Hash,
+	Save,
+} from 'lucide-react';
 import { AddToLibraryModalContext } from '@/components/modals/providers';
 
 type PageProps = {
@@ -124,6 +136,14 @@ export default function Details({
 	};
 
 	const handleDelete = async () => {
+		if (
+			!confirm(
+				'Êtes-vous sûr de vouloir retirer ce livre de votre bibliothèque ?'
+			)
+		) {
+			return;
+		}
+
 		try {
 			setIsUpdating(true);
 			setError(null);
@@ -145,8 +165,7 @@ export default function Details({
 				);
 			}
 
-			// Rediriger vers la page de la bibliothèque après la suppression
-			window.location.href = `/library/${libraryId}`;
+			window.location.href = '/';
 		} catch (err) {
 			setError('Erreur lors de la suppression du livre.');
 			console.error(err);
@@ -212,137 +231,232 @@ export default function Details({
 		return <div className="container mx-auto p-4">Livre non trouvé</div>;
 
 	return (
-		<div className="items-center justify-center mt-5">
-			<div className="w-[90%] mx-auto flex justify-end mb-4">
+		<div className="container mx-auto p-4 mt-5 space-y-6">
+			{/* En-tête avec bouton de sauvegarde */}
+			<div className="text-center mb-8">
+				<div className="flex items-center justify-center mb-4">
+					<BookOpen className="text-primary mr-3" size={32} />
+					<h1 className="text-3xl font-bold">Détails du livre</h1>
+				</div>
 				<Button
-					className="gap-2"
+					className="bg-primary text-background hover:bg-primary/90 gap-2"
 					onClick={handleModifications}
 					disabled={isUpdating}>
-					<PenLine />
-					<span>{isUpdating ? 'Sauvegarde...' : 'Enregistrer les modifications'}</span>
+					<Save size={16} />
+					<span>
+						{isUpdating ? 'Sauvegarde...' : 'Enregistrer les modifications'}
+					</span>
 				</Button>
 			</div>
-			<div className="w-[90%] mx-auto rounded flex flex-col md:flex-row gap-8 ">
-				<section className="flex-1 flex-col gap-4 space-y-5">
-					<Card className="flex-1 flex flex-col gap-4">
-						<span className="flex items-center gap-3 w-full">
-							<PenLine />
-							<input
-								className="text-3xl font-extrabold mb-2 w-full"
-								value={editableTitle}
-								onChange={(e) => setEditableTitle(e.target.value)}
-							/>
-						</span>
 
-						<div className="flex">
-							{book.details.description && (
-								<p className="leading-relaxed whitespace-pre-line">
-									{book.details.cover_image && (
+			<div className="flex flex-col lg:flex-row gap-6">
+				{/* Colonne principale - Informations du livre */}
+				<div className="flex-1">
+					<div className="space-y-6">
+						{/* Carte principale du livre */}
+						<Card className="p-6">
+							<div className="flex flex-col md:flex-row gap-6">
+								{/* Image de couverture */}
+								{book.details.cover_image && (
+									<div className="flex-shrink-0 mx-auto md:mx-0">
 										<img
 											src={book.details.cover_image}
-											alt={book.custom_title || book.title}
-											className="h-80 w-auto shadow-lg rounded float-right ml-6 mb-4"
+											alt={book.custom_title || book.details.title}
+											className="w-48 h-auto shadow-lg rounded-lg"
 										/>
+									</div>
+								)}
+
+								{/* Contenu principal */}
+								<div className="flex-1 space-y-4">
+									{/* Titre éditable */}
+									<div className="flex items-center gap-3">
+										<PenLine className="text-primary" size={20} />
+										<input
+											className="text-2xl md:text-3xl font-bold w-full bg-transparent border-b-2 border-primary/20 focus:border-primary outline-none pb-2"
+											value={editableTitle}
+											onChange={(e) => setEditableTitle(e.target.value)}
+											placeholder="Titre du livre"
+										/>
+									</div>
+
+									{/* Description */}
+									{book.details.description && (
+										<div className="prose prose-sm max-w-none">
+											<div
+												className="text-muted-foreground leading-relaxed"
+												dangerouslySetInnerHTML={{
+													__html: book.details.description,
+												}}
+											/>
+										</div>
 									)}
-									<span
-										dangerouslySetInnerHTML={{
-											__html: book.details.description,
-										}}
-									/>
+								</div>
+							</div>
+						</Card>
+
+						{/* Informations détaillées */}
+						<Card className="p-6">
+							<div className="flex items-center mb-6">
+								<BookOpen className="text-primary mr-3" size={24} />
+								<h2 className="text-2xl font-bold">Informations détaillées</h2>
+							</div>
+
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+								{book.details.published_date && (
+									<div className="flex items-center p-3 bg-card/50 rounded-lg border">
+										<Calendar className="text-blue-500 mr-3" size={20} />
+										<div>
+											<p className="text-sm text-muted-foreground">
+												Date de publication
+											</p>
+											<p className="font-medium">
+												{new Date(
+													book.details.published_date
+												).toLocaleDateString('fr-FR', {
+													year: 'numeric',
+													month: 'long',
+													day: 'numeric',
+												})}
+											</p>
+										</div>
+									</div>
+								)}
+
+								{book.details.author && (
+									<div className="flex items-center p-3 bg-card/50 rounded-lg border">
+										<Users className="text-green-500 mr-3" size={20} />
+										<div>
+											<p className="text-sm text-muted-foreground">Auteur</p>
+											<p className="font-medium">{book.details.author}</p>
+										</div>
+									</div>
+								)}
+
+								{book.details.publisher && (
+									<div className="flex items-center p-3 bg-card/50 rounded-lg border">
+										<Building2 className="text-purple-500 mr-3" size={20} />
+										<div>
+											<p className="text-sm text-muted-foreground">Éditeur</p>
+											<p className="font-medium">{book.details.publisher}</p>
+										</div>
+									</div>
+								)}
+
+								{book.details.language && (
+									<div className="flex items-center p-3 bg-card/50 rounded-lg border">
+										<Globe2 className="text-orange-500 mr-3" size={20} />
+										<div>
+											<p className="text-sm text-muted-foreground">Langue</p>
+											<p className="font-medium">{book.details.language}</p>
+										</div>
+									</div>
+								)}
+
+								{book.details.page_count !== undefined &&
+									book.details.page_count !== null && (
+										<div className="flex items-center p-3 bg-card/50 rounded-lg border">
+											<Hash className="text-pink-500 mr-3" size={20} />
+											<div>
+												<p className="text-sm text-muted-foreground">
+													Nombre de pages
+												</p>
+												<p className="font-medium">
+													{book.details.page_count > 0
+														? book.details.page_count
+														: 'Aucune information'}
+												</p>
+											</div>
+										</div>
+									)}
+
+								{book.details.genres && (
+									<div className="flex items-center p-3 bg-card/50 rounded-lg border md:col-span-2">
+										<BookOpen className="text-teal-500 mr-3" size={20} />
+										<div>
+											<p className="text-sm text-muted-foreground">Genres</p>
+											<p className="font-medium">
+												{Array.isArray(book.details.genres)
+													? book.details.genres.join(', ')
+													: book.details.genres}
+											</p>
+										</div>
+									</div>
+								)}
+							</div>
+						</Card>
+
+						{/* Section Canvas */}
+						<Card className="p-6">
+							<div className="flex items-center mb-6">
+								<PenLine className="text-primary mr-3" size={24} />
+								<h2 className="text-2xl font-bold">Canvas créatif</h2>
+							</div>
+							<div className="text-center py-8">
+								<PenLine
+									className="mx-auto text-muted-foreground mb-4"
+									size={48}
+								/>
+								<p className="text-muted-foreground">
+									Cette section est réservée à la création artistique.
 								</p>
-							)}
+								<p className="text-sm text-muted-foreground mt-2">
+									Bientôt disponible pour exprimer votre créativité !
+								</p>
+							</div>
+						</Card>
+					</div>
+				</div>
+
+				{/* Colonne droite - Notes et actions */}
+				<div className="lg:w-80 space-y-6">
+					{/* Actions rapides */}
+					<Card className="p-6">
+						<div className="flex items-center mb-4">
+							<Library className="text-primary mr-3" size={24} />
+							<h2 className="text-xl font-bold">Actions</h2>
 						</div>
-						<div className="flex self-end space-x-3 items-center mt-4">
-							<div className="bg-secondary p-2 px-4 rounded-2xl flex gap-2">
-								<label htmlFor="bookLibrary">
-									<Library />
+
+						<div className="space-y-3">
+							{/* Sélecteur de bibliothèque */}
+							<div className="space-y-2">
+								<label className="text-sm font-medium text-muted-foreground">
+									Bibliothèque
 								</label>
 								<select
-									name="bookLibrary"
-									id="bookLibrary"
-									className="bg-secondary"
-									onChange={handleLibraryChange}>
+									className="w-full p-2 bg-card border border-muted rounded-lg focus:border-primary outline-none"
+									onChange={handleLibraryChange}
+									value={libraryId}>
 									{libraryLoading ? (
-										<option disabled>Chargement des bibliothèques...</option>
+										<option disabled>Chargement...</option>
 									) : (
 										libraries.map((library) => (
-											<option
-												key={library.id}
-												value={library.id}
-												selected={library.id === libraryId ? 'selected' : ''}
-												className="text-foreground bg-popover">
+											<option key={library.id} value={library.id}>
 												{library.name}
 											</option>
 										))
 									)}
 								</select>
 							</div>
-							<Button className="!bg-red-400 lg:gap-2" onClick={handleDelete}>
-								<Minus />
-								<span className='hidden lg:block'>Retirer</span>
-							</Button>
-							<Button className='lg:gap-2' onClick={() => router.push(`/details/${book.details.id}`)}>
-                                <NotebookTabs />
-								<span className='hidden lg:block'>Accéder aux détails</span>
-							</Button>
-						</div>
-					</Card>
-				</section>
-				{/* Séparateur vertical */}
 
-				{/* Colonne droite : infos */}
-				<section className="flex-1 flex flex-col flex-start space-y-5">
-					<Card className="self-start w-full">
-						<h2 className="text-2xl font-bold mb-4 ">
-							Informations du livre :
-						</h2>
-						<div className=" space-y-2">
-							{book.details.published_date && (
-								<p>
-									<span className="font-semibold">Date de publication :</span>{' '}
-									{new Date(book.details.published_date).toLocaleDateString(
-										'fr-FR',
-										{
-											year: 'numeric',
-											month: 'long',
-											day: 'numeric',
-										}
-									)}
-								</p>
-							)}
-							{book.details.genres && (
-								<p>
-									<span className="font-semibold">Genres :</span>{' '}
-									{Array.isArray(book.details.genres)
-										? book.details.genres.join(', ')
-										: book.details.genres}
-								</p>
-							)}
-							{book.author && (
-								<p>
-									<span className="font-semibold">Auteur : {book.author}</span>{' '}
-								</p>
-							)}
-							{book.details.publisher && (
-								<p>
-									<span className="font-semibold">Éditeur :</span>{' '}
-									{book.details.publisher}
-								</p>
-							)}
-							{book.details.language && (
-								<p>
-									<span className="font-semibold">Langue :</span>{' '}
-									{book.language}
-								</p>
-							)}
-							{book.details.page_count && (
-								<p>
-									<span className="font-semibold">Nombre de pages :</span>{' '}
-									{book.details.page_count}
-								</p>
-							)}
+							{/* Boutons d'action */}
+							<div className="flex flex-col gap-2">
+								<Button
+									className="w-full gap-2 text-sm"
+									onClick={() => router.push(`/details/${book.details.id}`)}>
+									<NotebookTabs size={16} />
+									Accéder aux détails
+								</Button>
+								<Button
+									className="w-full gap-2 text-sm !bg-red-500 hover:!bg-red-600"
+									onClick={handleDelete}>
+									<Minus size={16} />
+									Retirer de la bibliothèque
+								</Button>
+							</div>
 						</div>
 					</Card>
+
 					{/* Section des notes */}
 					<Notes
 						className="flex-1"
@@ -353,14 +467,7 @@ export default function Details({
 						setIsPublic={setIsPublic}
 						isPublic={isPublic}
 					/>
-					{/* Section du canvas */}
-				</section>
-			</div>
-			<div className="h-screen w-[90%] items-center justify-center mx-auto ">
-				<Card className="mt-8 p-6 h-full">
-					<h2 className="text-2xl font-bold mb-4">Canvas</h2>
-					<p>Cette section est réservée à la création artistique.</p>
-				</Card>
+				</div>
 			</div>
 		</div>
 	);

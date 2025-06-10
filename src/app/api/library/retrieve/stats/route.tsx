@@ -4,9 +4,7 @@ import { verifySession } from '@/app/lib/dal';
 export async function GET() {
 	try {
 		const session = await verifySession();
-
-		const db = new Database();
-		const connection = await db.getDB();
+		const db = Database.getInstance();
 
 		const query = `
             SELECT 
@@ -41,7 +39,7 @@ export async function GET() {
         WHERE u.user_id = ?
         GROUP BY u.user_id;
         `;
-		const [stats] = await connection.query(query, [
+		const stats = await db.query(query, [
 			session.userId,
 			session.userId,
 			session.userId,

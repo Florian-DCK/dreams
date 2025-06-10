@@ -1,75 +1,68 @@
 import mysql from 'mysql2/promise';
 
-export default class Database{
-    private static instance: Database;
-    private db: any;
-    private hostname: string;
-    private port: number;
-    private username: string;
-    private password: string;
-    private databaseName: string;
+export default class Database {
+	private static instance: Database;
+	private pool: mysql.Pool | null = null;
 
-    public constructor() {
-        this.hostname = process.env.DB_HOST || 'localhost';
-        this.port = parseInt(process.env.DB_PORT || '5432', 10);
-        this.username = process.env.DB_USERNAME || 'user';
-        this.password = process.env.DB_PASSWORD || 'password';
-        this.databaseName = process.env.DB_NAME || 'database';
-    }
+	private constructor() {
+		this.initializePool();
+	}
 
-    public static getInstance(): Database {
-        if (!Database.instance) {
-            Database.instance = new Database();
-        }
-        return Database.instance;
-    }
+	public static getInstance(): Database {
+		if (!Database.instance) {
+			Database.instance = new Database();
+		}
+		return Database.instance;
+	}	private initializePool() {
+		this.pool = mysql.createPool({
+			host: process.env.DB_HOST || 'localhost',
+			port: parseInt(process.env.DB_PORT || '3306', 10),
+			user: process.env.DB_USERNAME || 'user',
+			password: process.env.DB_PASSWORD || 'password',
+			database: process.env.DB_NAME || 'database',
+			connectionLimit: 10, // Limite le nombre de connexions simultanées
+			queueLimit: 0, // Pas de limite sur la file d'attente
+			waitForConnections: true, // Attendre une connexion disponible
+			multipleStatements: false,
+		});
+	}
 
-    private async connect() {
-        if (!this.db) {
-            this.db = await mysql.createConnection({
-                host: this.hostname,
-                port: this.port,
-                user: this.username,
-                password: this.password,
-                database: this.databaseName,
-            });
-        }
-        return this.db;
-    }
+	public async query(sql: string, params: any[] = []): Promise<any> {
+		if (!this.pool) {
+			throw new Error('Database pool not initialized');
+		}
 
-    public async close() {
-        if (this.db) {
-            await this.db.end();
-            this.db = null;
-        }
-    }
+		try {
+			const [rows] = await this.pool.execute(sql, params);
+			return rows;
+		} catch (error) {
+			console.error('Database query failed:', error);
+			throw error;
+		}
+	}
 
-    public async query(sql: string, params: any[] = []) {
-        try {
-            const db = await this.connect();
-            const [rows] = await db.query(sql, params);
-            await this.close();
-            return rows;
-        } catch (error) {
-            await this.close();
-            console.error('Database query failed:', error);
-            throw error;
-        }
-    }
+	public async getConnection() {
+		if (!this.pool) {
+			throw new Error('Database pool not initialized');
+		}
+		return await this.pool.getConnection();
+	}
 
-    public async getDB() {
-        return await this.connect();
-    }
+	public async close() {
+		if (this.pool) {
+			await this.pool.end();
+			this.pool = null;
+		}
+	}
 
-    public async testdb() {
-        try {
-            const db = await this.getDB();
-            const [rows] = await db.query('SELECT 1 + 1 AS solution');
-            console.log('Database test query result:', rows);
-            return rows;
-        } catch (error) {
-            console.error('Database test query failed:', error);
-            throw error;
-        }
-    }
+	public async testdb() {
+		try {
+			const rows = await this.query('SELECT 1 + 1 AS solution');
+			console.log('Database test query result:', rows);
+			return rows;
+		} catch (error) {
+			console.error('Database test query failed:', error);
+			throw error;
+		}
+	}
 }

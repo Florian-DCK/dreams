@@ -13,58 +13,58 @@ export default function SearchCard({ book }: { book: any }) {
 
 	const handleAddToLibrary = () => {
 		openModal(book.id);
-	}
+	};
 
 	return (
-		<div className="bg-primary rounded-2xl p-4 shadow-sm flex flex-col h-full">
-			<h2 className="text-xl font-semibold text-white mb-2">
-				{book.volumeInfo.title}
-			</h2>
-			<div className="flex flex-grow">
+		<div className="bg-card rounded-lg p-6 shadow-sm flex flex-col h-full  hover:shadow-xl hover:-translate-x-1 hover:-translate-y-1 transition-all">
+			<div className="flex gap-4 mb-4">
 				{book.volumeInfo.imageLinks?.thumbnail && (
 					<img
 						src={book.volumeInfo.imageLinks.thumbnail}
 						alt={`Couverture de ${book.volumeInfo.title}`}
-						className="h-48 mr-5 object-contain"
+						className="w-16 h-24 object-cover rounded flex-shrink-0"
 					/>
 				)}
-				<div className="flex flex-col w-full">
-					<span className="flex justify-between w-full mb-5">
-						<p className="text-white opacity-60">
-							{book.volumeInfo.authors?.join(', ')}
-						</p>
-						<p className="text-white opacity-60">
-							{formatDate(book.volumeInfo.publishedDate)}
-						</p>
-					</span>
-					<p className="text-white opacity-60 mt-2 w-full">
-						{truncateText(book.volumeInfo.description, 256) ||
-							'Aucune description disponible.'}
+				<div className="flex-1 min-w-0">
+					<h2 className="text-lg font-semibold text-foreground mb-2 line-clamp-2">
+						{book.volumeInfo.title}
+					</h2>
+					<p className="text-sm text-muted-foreground mb-1">
+						{book.volumeInfo.authors?.join(', ') || 'Auteur inconnu'}
+					</p>
+					<p className="text-xs text-muted-foreground">
+						{formatDate(book.volumeInfo.publishedDate)}
 					</p>
 				</div>
 			</div>
-			<div className="flex mt-auto pt-5 items-center justify-between">
-				<span className="flex items-center space-x-2">
+
+			<p className="text-sm text-muted-foreground mb-4 flex-grow line-clamp-3">
+				{truncateText(book.volumeInfo.description, 150) ||
+					'Aucune description disponible.'}
+			</p>
+
+			<div className="flex items-center justify-between mt-auto">
+				<div className="flex gap-2">
 					<Button
 						onClick={() => router.push(`/details/${book.id}`)}
-						className="lg:space-x-2">
-						<NotebookTabs />
-						<span className='hidden lg:block'>Voir les détails</span>
+						className="gap-2 text-sm">
+						<NotebookTabs size={16} />
+						<span className="hidden sm:inline">Détails</span>
 					</Button>
-					<Button className="lg:space-x-2" onClick={handleAddToLibrary}>
-						<Plus />
-						<span className='hidden lg:block'>Ajouter</span>
+					<Button
+						onClick={handleAddToLibrary}
+						className="gap-2 text-sm bg-primary text-primary-foreground hover:bg-primary/90">
+						<Plus size={16} />
+						<span className="hidden sm:inline">Ajouter</span>
 					</Button>
-				</span>
-				{ book.nbReviews && book.nbReviews > 0 && (
-					<div className="flex items-center space-x-2">
-					<span className="text-white opacity-60">
-						{book.nbReviews} {book.nbReviews > 1 ? 'avis' : 'avis'}
-					</span>
-					<Stars
-						note={book.reviews}
-						editable={false}
-						/>
+				</div>
+
+				{book.nbReviews && book.nbReviews > 0 && (
+					<div className="flex items-center gap-2">
+						<span className="text-xs text-muted-foreground">
+							{book.nbReviews} avis
+						</span>
+						<Stars note={book.reviews} editable={false} />
 					</div>
 				)}
 			</div>
