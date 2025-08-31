@@ -23,7 +23,7 @@ export async function GET(request: Request) {
 	try {
 		const db = Database.getInstance();
 		const query =
-			'SELECT * FROM LibraryBooks JOIN Library ON Library.id = LibraryBooks.library_id WHERE book_id = ? AND user_id = ?';
+			'SELECT * FROM librarybooks JOIN libraries ON libraries.id = librarybooks.library_id WHERE book_id = $1 AND user_id = $2';
 		const rows = await db.query(query, [id, session.userId]);
 		if (rows.length === 0) {
 			return new Response(

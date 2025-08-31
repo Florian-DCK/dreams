@@ -50,8 +50,8 @@ export async function POST(request: Request) {
 		const db = Database.getInstance();
 
 		// Vérifier si la bibliothèque appartient à l'utilisateur
-		const libraryOwnerQuery = 'SELECT user_id FROM Library WHERE id = ?';
-		const libraryOwnerResult = await db.query(libraryOwnerQuery, [libraryId]);
+	const libraryOwnerQuery = 'SELECT user_id FROM libraries WHERE id = $1';
+	const libraryOwnerResult = await db.query(libraryOwnerQuery, [libraryId]);
 		if (libraryOwnerResult.length === 0) {
 			return new Response(
 				JSON.stringify({ error: "Cette bibliothèque n'existe pas" }),
@@ -76,7 +76,7 @@ export async function POST(request: Request) {
 
 		// Vérifier si le livre existe déjà dans une bibliothèque
 		const checkExistingQuery =
-			'SELECT * FROM LibraryBooks JOIN Library ON Library.id = LibraryBooks.library_id WHERE book_id = ? AND user_id = ?';
+			'SELECT * FROM librarybooks JOIN libraries ON libraries.id = librarybooks.library_id WHERE book_id = $1 AND user_id = $2';
 		const existingResult = await db.query(checkExistingQuery, [
 			bookId,
 			session.userId,
@@ -113,7 +113,7 @@ export async function POST(request: Request) {
 		}
 
 		const query =
-			'INSERT INTO LibraryBooks (library_id, book_id, note, review, custom_title, review_public) VALUES (?, ?, ?, ?, ?, ?)';
+			'INSERT INTO librarybooks (library_id, book_id, note, review, custom_title, review_public) VALUES ($1, $2, $3, $4, $5, $6)';
 		await db.query(query, [
 			libraryId,
 			bookId,
@@ -187,10 +187,10 @@ export async function PUT(request: Request) {
 		}
 		const db = Database.getInstance();
 		const query = `
-            UPDATE LibraryBooks 
-            SET note = ?, review = ?, custom_title = ?, review_public = ? 
-            WHERE book_id = ? AND library_id = ?
-        `;
+			UPDATE librarybooks 
+			SET note = $1, review = $2, custom_title = $3, review_public = $4 
+			WHERE book_id = $5 AND library_id = $6
+		`;
 		const queryResult = await db.query(query, [
 			note || null,
 			review || null,

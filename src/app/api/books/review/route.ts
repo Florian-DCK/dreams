@@ -14,7 +14,7 @@ export async function GET(request: Request) {
 		}
 		const db = Database.getInstance();
 		const query =
-			"SELECT note, review, Users.username FROM LibraryBooks JOIN Library ON Library.id = LibraryBooks.library_id JOIN Users ON Users.user_id = Library.user_id WHERE book_id = ? AND review_public = 'Y' AND note IS NOT NULL";
+			"SELECT note, review, users.username FROM librarybooks JOIN libraries ON libraries.id = librarybooks.library_id JOIN users ON users.user_id = libraries.user_id WHERE book_id = $1 AND review_public = 'Y' AND note IS NOT NULL";
 		const rows = await db.query(query, [bookId]);
 
 		if (rows.length === 0) {

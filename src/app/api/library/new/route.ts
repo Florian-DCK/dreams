@@ -29,7 +29,7 @@ export async function POST(request: Request) {
 		}
 		const db = Database.getInstance();
 		const query =
-			'INSERT INTO Library (user_id, name, description, color) VALUES (?, ?, ?, ?)';
+			'INSERT INTO libraries (user_id, name, description, color) VALUES ($1, $2, $3, $4)';
 		const result = await db.query(query, [
 			user_id,
 			library_name,

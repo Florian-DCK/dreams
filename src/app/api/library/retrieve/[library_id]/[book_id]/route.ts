@@ -12,8 +12,8 @@ export async function GET(
 		const { library_id, book_id } = params;
 
 		// Vérifier si la bibliothèque appartient à l'utilisateur
-		const libraryQuery = 'SELECT * FROM Library WHERE id = ? AND user_id = ?';
-		const library = await db.query(libraryQuery, [library_id, session.userId]);
+	const libraryQuery = 'SELECT * FROM libraries WHERE id = $1 AND user_id = $2';
+	const library = await db.query(libraryQuery, [library_id, session.userId]);
 
 		if (library.length === 0) {
 			return NextResponse.json(
@@ -24,7 +24,7 @@ export async function GET(
 
 		// Récupérer le livre spécifique dans la bibliothèque
 		const bookQuery =
-			'SELECT * FROM LibraryBooks WHERE library_id = ? AND book_id = ?';
+			'SELECT * FROM librarybooks WHERE library_id = $1 AND book_id = $2';
 		const book = await db.query(bookQuery, [library_id, book_id]);
 
 		if (book.length === 0) {
@@ -35,8 +35,8 @@ export async function GET(
 		}
 
 		// Récupérer les détails du livre
-		const bookDetailsQuery = 'SELECT * FROM Books WHERE id = ?';
-		const bookDetails = await db.query(bookDetailsQuery, [book_id]);
+	const bookDetailsQuery = 'SELECT * FROM books WHERE id = $1';
+	const bookDetails = await db.query(bookDetailsQuery, [book_id]);
 
 		if (bookDetails.length === 0) {
 			return NextResponse.json(

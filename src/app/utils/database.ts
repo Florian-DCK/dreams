@@ -1,8 +1,10 @@
-import mysql from 'mysql2/promise';
+
+import { Pool } from 'pg';
+
 
 export default class Database {
 	private static instance: Database;
-	private pool: mysql.Pool | null = null;
+	private pool: Pool | null = null;
 
 	private constructor() {
 		this.initializePool();
@@ -13,39 +15,35 @@ export default class Database {
 			Database.instance = new Database();
 		}
 		return Database.instance;
-	}	private initializePool() {
-		this.pool = mysql.createPool({
-			host: process.env.DB_HOST || 'localhost',
-			port: parseInt(process.env.DB_PORT || '3306', 10),
-			user: process.env.DB_USERNAME || 'user',
-			password: process.env.DB_PASSWORD || 'password',
-			database: process.env.DB_NAME || 'database',
-			connectionLimit: 10, // Limite le nombre de connexions simultanées
-			queueLimit: 0, // Pas de limite sur la file d'attente
-			waitForConnections: true, // Attendre une connexion disponible
-			multipleStatements: false,
-		});
+	}
+
+	private initializePool() {
+		// Utilise DATABASE_URL (format PostgreSQL/Neon) si dispo, sinon fallback sur config manuelle
+		const connectionString = process.env.DATABASE_URL;
+		this.pool = new Pool(
+			connectionString
+				? { connectionString }
+				: {
+					  host: process.env.DB_HOST || 'localhost',
+					  port: parseInt(process.env.DB_PORT || '5432', 10),
+					  user: process.env.DB_USERNAME || 'user',
+					  password: process.env.DB_PASSWORD || 'password',
+					  database: process.env.DB_NAME || 'database',
+				  }
+		);
 	}
 
 	public async query(sql: string, params: any[] = []): Promise<any> {
 		if (!this.pool) {
 			throw new Error('Database pool not initialized');
 		}
-
 		try {
-			const [rows] = await this.pool.execute(sql, params);
-			return rows;
+			const result = await this.pool.query(sql, params);
+			return result.rows;
 		} catch (error) {
 			console.error('Database query failed:', error);
 			throw error;
 		}
-	}
-
-	public async getConnection() {
-		if (!this.pool) {
-			throw new Error('Database pool not initialized');
-		}
-		return await this.pool.getConnection();
 	}
 
 	public async close() {

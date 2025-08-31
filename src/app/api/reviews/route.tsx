@@ -11,17 +11,17 @@ export async function GET(request: Request) {
 		if (global === 'true') {
 			// Récupérer les reviews publiques de tous les utilisateurs
 			const query = `
-                SELECT lb.review, lb.note, b.title, b.cover_image, 
-                       lb.review_public, lb.library_id, lb.book_id, 
-                       u.username, lb.created_at
-                FROM LibraryBooks AS lb 
-                JOIN Library AS l ON l.id = lb.library_id 
-                JOIN Users AS u ON u.user_id = l.user_id 
-                JOIN Books AS b ON b.id = lb.book_id 
-                WHERE lb.review_public = 'Y' 
-                AND (lb.review IS NOT NULL OR lb.note IS NOT NULL)
-                ORDER BY lb.created_at DESC
-            `;
+				SELECT lb.review, lb.note, b.title, b.cover_image, 
+					   lb.review_public, lb.library_id, lb.book_id, 
+					   u.username, lb.created_at
+				FROM librarybooks AS lb 
+				JOIN libraries AS l ON l.id = lb.library_id 
+				JOIN users AS u ON u.user_id = l.user_id 
+				JOIN books AS b ON b.id = lb.book_id 
+				WHERE lb.review_public = 'Y' 
+				AND (lb.review IS NOT NULL OR lb.note IS NOT NULL)
+				ORDER BY lb.created_at DESC
+			`;
 			const reviews = await db.query(query, []);
 			return new Response(JSON.stringify(reviews), {
 				status: 200,
@@ -31,14 +31,14 @@ export async function GET(request: Request) {
 			// Code existant pour les reviews de l'utilisateur connecté
 			const session = await verifySession();
 			const query = `
-                SELECT review, note, title, cover_image, review_public, 
-                       library_id, book_id 
-                FROM LibraryBooks AS lb 
-                JOIN Library AS l ON l.id = lb.library_id 
-                JOIN Users AS u ON u.user_id = l.user_id 
-                JOIN Books AS b ON b.id = lb.book_id 
-                WHERE u.user_id = ?
-            `;
+				SELECT review, note, title, cover_image, review_public, 
+					   library_id, book_id 
+				FROM librarybooks AS lb 
+				JOIN libraries AS l ON l.id = lb.library_id 
+				JOIN users AS u ON u.user_id = l.user_id 
+				JOIN books AS b ON b.id = lb.book_id 
+				WHERE u.user_id = $1
+			`;
 			const reviews = await db.query(query, [session.userId]);
 			return new Response(JSON.stringify(reviews), {
 				status: 200,

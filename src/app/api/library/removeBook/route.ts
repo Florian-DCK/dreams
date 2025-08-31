@@ -26,7 +26,7 @@ export async function DELETE(request: Request) {
 		}
 		const db = Database.getInstance();
 		const query =
-			'DELETE FROM LibraryBooks WHERE book_id = ? AND library_id = ?';
+			'DELETE FROM librarybooks WHERE book_id = $1 AND library_id = $2';
 		await db.query(query, [bookId, libraryId]);
 
 		return new Response(

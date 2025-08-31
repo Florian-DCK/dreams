@@ -5,17 +5,17 @@ export async function GET() {
 	try {
 		const session = await verifySession();
 
-		const db = Database.getInstance();
-		const query = 'SELECT * FROM Library WHERE user_id = ?';
-		const libraries = await db.query(query, [session.userId]);
+	const db = Database.getInstance();
+	const query = 'SELECT * FROM libraries WHERE user_id = $1';
+	const libraries = await db.query(query, [session.userId]);
 
 		// récupérer les livres dans chaque bibliothèque
 		for (const library of libraries) {
-			const booksQuery = 'SELECT * FROM LibraryBooks WHERE library_id = ?';
+			const booksQuery = 'SELECT * FROM librarybooks WHERE library_id = $1';
 			const books = await db.query(booksQuery, [library.id]);
 			for (const book of books) {
 				// récupérer les informations du livre
-				const bookQuery = 'SELECT * FROM Books WHERE id = ?';
+				const bookQuery = 'SELECT * FROM books WHERE id = $1';
 				const bookDetails = await db.query(bookQuery, [book.book_id]);
 				book.details = bookDetails[0]; // ajouter les détails du livre à l'objet book
 			}

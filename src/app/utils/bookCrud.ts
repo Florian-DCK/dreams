@@ -8,7 +8,7 @@ import Database from '@/app/utils/database';
  */
 export async function getBook(id: string) {
 	const db = Database.getInstance();
-	const query = 'SELECT * FROM Books WHERE id = ?';
+	const query = 'SELECT * FROM books WHERE id = $1';
 	const rows = await db.query(query, [id]);
 	if (rows.length === 0) {
 		throw new Error('Book not found.');
@@ -23,7 +23,7 @@ export async function getBook(id: string) {
  */
 export async function checkBookExists(id: string) {
 	const db = Database.getInstance();
-	const query = 'SELECT * FROM Books WHERE id = ?';
+	const query = 'SELECT * FROM books WHERE id = $1';
 	const rows = await db.query(query, [id]);
 	return rows.length > 0;
 }
@@ -48,7 +48,7 @@ export async function fetchBook(id: string) {
 	try {
 		const db = Database.getInstance();
 		const query =
-			'INSERT INTO Books (id, title, author, publisher, published_date, page_count, description, cover_image, isbn) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+			'INSERT INTO books (id, title, author, publisher, published_date, page_count, description, cover_image, isbn) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)';
 		let isbn = 'Unknown';
 		if (book.volumeInfo.industryIdentifiers) {
 			const isbnObj = book.volumeInfo.industryIdentifiers.find(
